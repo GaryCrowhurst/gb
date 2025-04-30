@@ -398,8 +398,8 @@
             opacity: 1;
         }
         
-        /* Drag and drop activities */
-        .drag-drop-activity {
+        /* Matching activities using dropdowns */
+        .matching-activity {
             background-color: white;
             border-radius: 8px;
             padding: 1rem;
@@ -407,65 +407,99 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         
-        .drag-items {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 1rem 0;
+        .instructions {
+            background-color: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--info);
+            font-size: 0.9rem;
         }
         
-        .drag-item {
-            background-color: var(--info);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 4px;
-            cursor: grab;
-            user-select: none;
-            transition: all 0.2s;
-        }
-        
-        .drag-item.dragging {
-            opacity: 0.5;
-            transform: scale(1.05);
-        }
-        
-        .drop-targets {
+        .matching-slots {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 15px;
             margin: 1rem 0;
         }
         
-        .drop-target {
-            min-height: 80px;
-            border: 2px dashed #ccc;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .matching-slot {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            background-color: #f9f9f9;
+        }
+        
+        .matching-slot-label {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .matching-select {
+            width: 100%;
             padding: 10px;
-            transition: all 0.2s;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            background-color: white;
         }
         
-        .drop-target.highlight {
-            border-color: var(--accent);
-            background-color: rgba(5, 191, 219, 0.1);
-        }
-        
-        .drop-target.correct {
+        .matching-slot.correct {
             border-color: var(--success);
             background-color: rgba(46, 204, 113, 0.1);
         }
         
-        .drop-target.incorrect {
+        .matching-slot.incorrect {
             border-color: var(--danger);
             background-color: rgba(231, 76, 60, 0.1);
         }
         
-        .drop-target-label {
+        .matching-result {
+            margin-top: 10px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            height: 20px;
+        }
+        
+        .progress-indicator-container {
+            background-color: #f0f0f0;
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin: 10px 0;
             text-align: center;
-            font-weight: bold;
-            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .progress-indicator {
+            color: var(--primary);
+        }
+        
+        .matching-success {
+            background-color: rgba(46, 204, 113, 0.2);
+            border-left: 4px solid var(--success);
+            color: #27ae60;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 0 8px 8px 0;
+            font-weight: 500;
+            display: none;
+        }
+        
+        .matching-success.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Make sure we have enough space on mobile */
+        @media (max-width: 768px) {
+            .matching-slots {
+                grid-template-columns: 1fr;
+            }
         }
         
         /* Section objective and summary styles */
@@ -942,109 +976,152 @@
             return false;
         }
         
-        // Initialize drag and drop functionality
-        function initializeDragDrop(activityId) {
-            const dragItems = document.querySelectorAll('.drag-item');
-            const dropTargets = document.querySelectorAll('.drop-target');
+        // Initialize matching activities with dropdown selects
+        function initializeMatchingActivity(activityId) {
+            const activity = document.querySelector('.matching-activity[data-id="' + activityId + '"]');
+            if (!activity) return;
             
-            let draggedItem = null;
+            const slots = activity.querySelectorAll('.matching-slot');
+            const successMessage = activity.querySelector('.matching-success');
+            const allSelects = activity.querySelectorAll('.matching-select');
             
-            dragItems.forEach(item => {
-                item.addEventListener('dragstart', function() {
-                    draggedItem = this;
-                    this.classList.add('dragging');
-                });
+            // Track changes to all selects in this activity
+            function handleSelectChange(e) {
+                const select = e.target;
+                const slot = select.closest('.matching-slot');
+                const selectedValue = select.value;
+                const correctValue = slot.dataset.accepts;
                 
-                item.addEventListener('dragend', function() {
-                    this.classList.remove('dragging');
-                });
+                // Reset any previous state
+                slot.classList.remove('correct', 'incorrect');
+                const resultDisplay = slot.querySelector('.matching-result');
+                if (resultDisplay) {
+                    resultDisplay.textContent = '';
+                }
                 
-                // For touch devices
-                item.addEventListener('touchstart', function(e) {
-                    draggedItem = this;
-                    this.classList.add('dragging');
-                });
-            });
+                // If nothing selected, do nothing more
+                if (selectedValue === '') return;
+                
+                // Check if the selection is correct
+                if (selectedValue === correctValue) {
+                    slot.classList.add('correct');
+                    if (resultDisplay) {
+                        resultDisplay.textContent = '✓ Correct!';
+                        resultDisplay.style.color = '#27ae60';
+                    }
+                } else {
+                    slot.classList.add('incorrect');
+                    if (resultDisplay) {
+                        resultDisplay.textContent = '✗ Try again';
+                        resultDisplay.style.color = '#c0392b';
+                    }
+                }
+                
+                // Check if all selections are correct
+                checkAllCorrect();
+            }
             
-            dropTargets.forEach(target => {
-                target.addEventListener('dragover', function(e) {
-                    e.preventDefault();
-                    this.classList.add('highlight');
-                });
+            // Check if all selections are correct
+            function checkAllCorrect() {
+                // Count correct selections
+                let correctCount = 0;
+                let totalRequired = 0;
                 
-                target.addEventListener('dragleave', function() {
-                    this.classList.remove('highlight');
-                });
-                
-                target.addEventListener('drop', function(e) {
-                    e.preventDefault();
-                    this.classList.remove('highlight');
-                    
-                    if (draggedItem) {
-                        const correctTarget = this.dataset.accepts === draggedItem.dataset.type;
-                        
-                        if (correctTarget) {
-                            this.innerHTML = '';
-                            this.appendChild(draggedItem);
-                            this.classList.add('correct');
-                            
-                            // Check if all items are correctly placed
-                            const allCorrect = Array.from(dropTargets).every(target => {
-                                return target.children.length > 0 || !target.dataset.accepts;
-                            });
-                            
-                            if (allCorrect) {
-                                if (completeActivity(activityId)) {
-                                    updateSectionProgress(app.activeSection, 
-                                        app.progress[app.activeSection] + 20);
-                                }
-                            }
-                        } else {
-                            this.classList.add('incorrect');
-                            setTimeout(() => {
-                                this.classList.remove('incorrect');
-                            }, 1000);
+                allSelects.forEach(select => {
+                    const slot = select.closest('.matching-slot');
+                    if (slot.dataset.accepts) {
+                        totalRequired++;
+                        if (select.value === slot.dataset.accepts) {
+                            correctCount++;
                         }
                     }
                 });
                 
-                // For touch devices
-                target.addEventListener('touchend', function(e) {
-                    e.preventDefault();
-                    this.classList.remove('highlight');
+                // Update progress indicator if available
+                const progressIndicator = activity.querySelector('.progress-indicator');
+                if (progressIndicator) {
+                    progressIndicator.textContent = `${correctCount}/${totalRequired} correct`;
+                }
+                
+                // Check if all required selections are correct
+                const allCorrect = correctCount === totalRequired && totalRequired > 0;
+                
+                if (allCorrect) {
+                    if (successMessage) {
+                        successMessage.classList.add('show');
+                    }
                     
-                    if (draggedItem) {
-                        // Similar logic as drop event
-                        const correctTarget = this.dataset.accepts === draggedItem.dataset.type;
-                        
-                        if (correctTarget) {
-                            this.innerHTML = '';
-                            this.appendChild(draggedItem);
-                            this.classList.add('correct');
+                    // Award points if this is the first time completing
+                    if (completeActivity(activityId)) {
+                        updateSectionProgress(app.activeSection, 
+                            app.progress[app.activeSection] + 20);
                             
-                            // Check if all items are correctly placed
-                            const allCorrect = Array.from(dropTargets).every(target => {
-                                return target.children.length > 0 || !target.dataset.accepts;
-                            });
-                            
-                            if (allCorrect) {
-                                if (completeActivity(activityId)) {
-                                    updateSectionProgress(app.activeSection, 
-                                        app.progress[app.activeSection] + 20);
-                                }
-                            }
-                        } else {
-                            this.classList.add('incorrect');
-                            setTimeout(() => {
-                                this.classList.remove('incorrect');
-                            }, 1000);
-                        }
+                        // Show floating point animation
+                        const pointsAnimation = document.createElement('div');
+                        pointsAnimation.classList.add('points-animation');
+                        pointsAnimation.textContent = '+20 points';
                         
-                        draggedItem.classList.remove('dragging');
-                        draggedItem = null;
+                        const rect = activity.getBoundingClientRect();
+                        pointsAnimation.style.left = `${rect.left + rect.width / 2}px`;
+                        pointsAnimation.style.top = `${rect.top + rect.height / 2}px`;
+                        
+                        document.body.appendChild(pointsAnimation);
+                        
+                        // Remove animation after it completes
+                        setTimeout(() => {
+                            document.body.removeChild(pointsAnimation);
+                        }, 1500);
+                    }
+                } else {
+                    if (successMessage) {
+                        successMessage.classList.remove('show');
+                    }
+                }
+            }
+            
+            // Add change event listeners to all select elements
+            allSelects.forEach(select => {
+                select.addEventListener('change', handleSelectChange);
+            });
+            
+            // Add a progress indicator
+            const progressContainer = document.createElement('div');
+            progressContainer.className = 'progress-indicator-container';
+            progressContainer.innerHTML = '<span class="progress-indicator">0/' + allSelects.length + ' correct</span>';
+            
+            // Insert after the instructions
+            const instructions = activity.querySelector('.instructions');
+            if (instructions && !activity.querySelector('.progress-indicator-container')) {
+                instructions.after(progressContainer);
+            }
+            
+            // Initialize Reset button if present
+            const resetButton = activity.querySelector('.reset-activity');
+            if (resetButton) {
+                resetButton.addEventListener('click', function() {
+                    // Reset all selects to default value
+                    allSelects.forEach(select => {
+                        select.value = '';
+                        // Trigger change event to update visuals
+                        const event = new Event('change');
+                        select.dispatchEvent(event);
+                    });
+                    
+                    // Hide success message
+                    if (successMessage) {
+                        successMessage.classList.remove('show');
+                    }
+                    
+                    // Reset progress indicator
+                    const progressIndicator = activity.querySelector('.progress-indicator');
+                    if (progressIndicator) {
+                        progressIndicator.textContent = `0/${allSelects.length} correct`;
                     }
                 });
-            });
+            }
+            
+            // Initial check in case page loads with pre-selected values
+            checkAllCorrect();
         }
         
         // Initialize knowledge check functionality
@@ -1346,35 +1423,67 @@
                     <div class="knowledge-feedback"></div>
                 </div>
                 
-                <div class="drag-drop-activity" data-id="transmission-components">
+                <div class="matching-activity" data-id="transmission-components">
                     <h3>Activity: Match the Component to its Purpose</h3>
-                    <p>Drag each component to its corresponding purpose in transmission systems.</p>
-                    
-                    <div class="drag-items">
-                        <div class="drag-item" draggable="true" data-type="synchromesh">Synchromesh</div>
-                        <div class="drag-item" draggable="true" data-type="clutch">Clutch</div>
-                        <div class="drag-item" draggable="true" data-type="differential">Differential</div>
-                        <div class="drag-item" draggable="true" data-type="gearset">Gear Set</div>
+                    <div class="instructions">
+                        Select the correct component for each function in a transmission system.
                     </div>
                     
-                    <div class="drop-targets">
-                        <div>
-                            <div class="drop-target-label">Engages/Disengages Power</div>
-                            <div class="drop-target" data-accepts="clutch"></div>
+                    <div class="matching-slots">
+                        <div class="matching-slot" data-accepts="clutch">
+                            <div class="matching-slot-label">Engages/Disengages Power</div>
+                            <select class="matching-select">
+                                <option value="">Select component...</option>
+                                <option value="clutch">Clutch</option>
+                                <option value="synchromesh">Synchromesh</option>
+                                <option value="differential">Differential</option>
+                                <option value="gearset">Gear Set</option>
+                            </select>
+                            <div class="matching-result"></div>
                         </div>
-                        <div>
-                            <div class="drop-target-label">Smooth Gear Changes</div>
-                            <div class="drop-target" data-accepts="synchromesh"></div>
+                        
+                        <div class="matching-slot" data-accepts="synchromesh">
+                            <div class="matching-slot-label">Smooth Gear Changes</div>
+                            <select class="matching-select">
+                                <option value="">Select component...</option>
+                                <option value="clutch">Clutch</option>
+                                <option value="synchromesh">Synchromesh</option>
+                                <option value="differential">Differential</option>
+                                <option value="gearset">Gear Set</option>
+                            </select>
+                            <div class="matching-result"></div>
                         </div>
-                        <div>
-                            <div class="drop-target-label">Wheels at Different Speeds</div>
-                            <div class="drop-target" data-accepts="differential"></div>
+                        
+                        <div class="matching-slot" data-accepts="differential">
+                            <div class="matching-slot-label">Wheels at Different Speeds</div>
+                            <select class="matching-select">
+                                <option value="">Select component...</option>
+                                <option value="clutch">Clutch</option>
+                                <option value="synchromesh">Synchromesh</option>
+                                <option value="differential">Differential</option>
+                                <option value="gearset">Gear Set</option>
+                            </select>
+                            <div class="matching-result"></div>
                         </div>
-                        <div>
-                            <div class="drop-target-label">Changes Torque Ratio</div>
-                            <div class="drop-target" data-accepts="gearset"></div>
+                        
+                        <div class="matching-slot" data-accepts="gearset">
+                            <div class="matching-slot-label">Changes Torque Ratio</div>
+                            <select class="matching-select">
+                                <option value="">Select component...</option>
+                                <option value="clutch">Clutch</option>
+                                <option value="synchromesh">Synchromesh</option>
+                                <option value="differential">Differential</option>
+                                <option value="gearset">Gear Set</option>
+                            </select>
+                            <div class="matching-result"></div>
                         </div>
                     </div>
+                    
+                    <div class="matching-success">
+                        Great job! You've correctly matched all components to their functions!
+                    </div>
+                    
+                    <button class="btn reset-activity">Reset Activity</button>
                 </div>
                 
                 <h2>Refitting Procedures</h2>
@@ -2672,6 +2781,18 @@
             menuToggle.addEventListener('click', function() {
                 document.getElementById('main-nav').classList.toggle('expanded');
             });
+            
+            // Set up reset button
+            const resetButton = document.getElementById('reset-all-activities');
+            if (resetButton) {
+                resetButton.addEventListener('click', function() {
+                    if (confirm('Are you sure you want to reset all your progress? This cannot be undone.')) {
+                        resetAppData();
+                        alert('All progress has been reset. The page will now reload.');
+                        window.location.reload();
+                    }
+                });
+            }
             
             // Load home content initially
             loadContent('home');
