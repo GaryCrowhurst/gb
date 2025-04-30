@@ -1,0 +1,2952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motorsport Maintenance Learning Hub</title>
+    <style>
+        :root {
+            --primary: #0a4d68;
+            --secondary: #088395;
+            --accent: #05bfdb;
+            --light: #00ffca;
+            --dark: #083344;
+            --bg-light: #f4f9fc;
+            --text-dark: #222;
+            --text-light: #fff;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --info: #3498db;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: var(--text-light);
+            padding: 1rem;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        /* Progress tracking */
+        .progress-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: var(--accent);
+            transition: width 0.5s ease-in-out;
+        }
+        
+        .achievements {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .badge {
+            width: 40px;
+            height: 40px;
+            background-color: #ddd;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #888;
+            position: relative;
+        }
+        
+        .badge.earned {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .badge-tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--dark);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+        
+        .badge:hover .badge-tooltip {
+            opacity: 1;
+        }
+        
+        /* Navigation */
+        .menu-toggle {
+            display: none;
+            background: var(--dark);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        nav {
+            position: relative;
+        }
+        
+        nav ul {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            list-style: none;
+            margin-top: 0.5rem;
+            transition: max-height 0.5s ease-in-out;
+            overflow: hidden;
+        }
+        
+        nav ul li {
+            flex-grow: 1;
+            flex-basis: calc(33.333% - 0.5rem);
+        }
+        
+        .nav-btn {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--secondary);
+            color: var(--text-light);
+            text-align: center;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+        }
+        
+        .nav-btn:hover {
+            background-color: var(--accent);
+        }
+        
+        .nav-btn.active {
+            background-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--light);
+        }
+
+        /* Mobile menu styles */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+                width: 100%;
+            }
+            
+            nav ul {
+                max-height: 0;
+                margin-top: 0.5rem;
+            }
+            
+            nav ul.expanded {
+                max-height: 500px;
+                margin-top: 0.5rem;
+            }
+        }
+        
+        /* Subsection navigation */
+        .subsection-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        
+        .subsection-btn {
+            padding: 0.5rem 1rem;
+            background-color: var(--dark);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .subsection-btn.active {
+            background-color: var(--accent);
+        }
+        
+        /* Content section */
+        .content-section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            min-height: 300px;
+        }
+        
+        .home-content {
+            text-align: center;
+        }
+        
+        .content-section h1 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+        }
+        
+        .content-section h2 {
+            color: var(--secondary);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .content-section p {
+            margin-bottom: 1rem;
+        }
+        
+        .content-section ul, .content-section ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Quiz styles */
+        .quiz-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        
+        .quiz-question {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+        
+        .quiz-options {
+            display: grid;
+            gap: 0.75rem;
+        }
+        
+        .quiz-option {
+            padding: 1rem;
+            background-color: #f0f7ff;
+            border: 2px solid #d0e3ff;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .quiz-option:hover {
+            background-color: #e0eeff;
+            border-color: var(--accent);
+        }
+        
+        .quiz-option.selected {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--secondary);
+        }
+        
+        .quiz-navigation {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: var(--accent);
+        }
+        
+        .btn-large {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        /* Quiz results */
+        .quiz-results {
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        .score-display {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 1rem 0;
+        }
+        
+        /* Media query for mobile */
+        @media (max-width: 768px) {
+            nav ul li {
+                flex-basis: 100%;
+            }
+        }
+        
+        /* Interactive diagrams and activities */
+        .interactive-diagram {
+            width: 100%;
+            max-width: 500px;
+            margin: 1.5rem auto;
+            border: 2px solid var(--accent);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .diagram-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+        }
+        
+        .diagram-image {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .hotspot {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-color: var(--accent);
+            border-radius: 50%;
+            cursor: pointer;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .hotspot:hover {
+            transform: translate(-50%, -50%) scale(1.2);
+            background-color: var(--light);
+            color: var(--dark);
+        }
+        
+        .tooltip {
+            position: absolute;
+            background-color: var(--dark);
+            color: white;
+            padding: 0.5rem;
+            border-radius: 4px;
+            width: 200px;
+            z-index: 20;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            font-size: 0.9rem;
+        }
+        
+        .hotspot:hover + .tooltip {
+            opacity: 1;
+        }
+        
+        /* Drag and drop activities */
+        .drag-drop-activity {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .drag-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 1rem 0;
+        }
+        
+        .drag-item {
+            background-color: var(--info);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: grab;
+            user-select: none;
+            transition: all 0.2s;
+        }
+        
+        .drag-item.dragging {
+            opacity: 0.5;
+            transform: scale(1.05);
+        }
+        
+        .drop-targets {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 1rem 0;
+        }
+        
+        .drop-target {
+            min-height: 80px;
+            border: 2px dashed #ccc;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            transition: all 0.2s;
+        }
+        
+        .drop-target.highlight {
+            border-color: var(--accent);
+            background-color: rgba(5, 191, 219, 0.1);
+        }
+        
+        .drop-target.correct {
+            border-color: var(--success);
+            background-color: rgba(46, 204, 113, 0.1);
+        }
+        
+        .drop-target.incorrect {
+            border-color: var(--danger);
+            background-color: rgba(231, 76, 60, 0.1);
+        }
+        
+        .drop-target-label {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        /* Section objective and summary styles */
+        .section-objective {
+            background-color: #f0f7ff;
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            margin: 1rem 0 2rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .section-objective h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .section-objective ol {
+            padding-left: 1.5rem;
+        }
+        
+        .section-objective li {
+            margin-bottom: 0.25rem;
+        }
+        
+        .section-summary {
+            background-color: #f0fff5;
+            border-left: 4px solid var(--success);
+            padding: 1rem;
+            margin: 2rem 0 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .section-summary h3 {
+            color: var(--success);
+            margin-bottom: 0.5rem;
+        }
+        
+        .activity-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-top: 4px solid var(--accent);
+        }
+        
+        .activity-container h3 {
+            color: var(--dark);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .activity-container h3:before {
+            content: "🔍";
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+        
+        /* Points system and rewards */
+        .points-display {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background-color: var(--dark);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            z-index: 90;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .points-animation {
+            position: fixed;
+            color: var(--success);
+            font-weight: bold;
+            z-index: 100;
+            pointer-events: none;
+            animation: floatUp 1.5s ease-out forwards;
+        }
+        
+        @keyframes floatUp {
+            0% {
+                opacity: 0;
+                transform: translateY(0);
+            }
+            20% {
+                opacity: 1;
+            }
+            80% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-80px);
+            }
+        }
+        
+        /* Level up notification */
+        .level-up {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: var(--dark);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 1000;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            animation: popIn 0.5s ease-out forwards;
+            display: none;
+        }
+        
+        .level-up.show {
+            display: block;
+        }
+        
+        .level-up-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .level-up-icon {
+            font-size: 3rem;
+            color: var(--light);
+            margin: 10px 0;
+        }
+        
+        @keyframes popIn {
+            0% {
+                transform: translate(-50%, -50%) scale(0.8);
+                opacity: 0;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+        
+        /* Flip cards for key concepts */
+        .flip-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .flip-card {
+            perspective: 1000px;
+            height: 200px;
+        }
+        
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .flip-card-front {
+            background-color: var(--secondary);
+            color: white;
+            font-weight: bold;
+        }
+        
+        .flip-card-back {
+            background-color: var(--light);
+            color: var(--dark);
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Motorsport Maintenance Learning Hub</h1>
+        <nav>
+            <button id="menu-toggle" class="menu-toggle">☰ Menu</button>
+            <ul id="main-nav">
+                <li><button class="nav-btn active" data-section="home">Home</button></li>
+                <li><button class="nav-btn" data-section="transmission">Transmission</button></li>
+                <li><button class="nav-btn" data-section="clutch">Clutch Systems</button></li>
+                <li><button class="nav-btn" data-section="gearbox">Manual Gearbox</button></li>
+                <li><button class="nav-btn" data-section="driveline">Driveline Components</button></li>
+                <li><button class="nav-btn" data-section="quiz">Test Your Knowledge</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <!-- Progress tracking -->
+        <div class="progress-container">
+            <div class="points-display">Points: <span id="points-counter">0</span></div>
+            <h3>Your Learning Progress</h3>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+            </div>
+            <div class="achievements" id="achievements-container">
+                <div class="badge" data-achievement="transmission">
+                    🔧
+                    <div class="badge-tooltip">Transmission Expert</div>
+                </div>
+                <div class="badge" data-achievement="clutch">
+                    ⚙️
+                    <div class="badge-tooltip">Clutch Master</div>
+                </div>
+                <div class="badge" data-achievement="gearbox">
+                    📊
+                    <div class="badge-tooltip">Gearbox Guru</div>
+                </div>
+                <div class="badge" data-achievement="driveline">
+                    🔄
+                    <div class="badge-tooltip">Driveline Pro</div>
+                </div>
+                <div class="badge" data-achievement="quiz">
+                    🏆
+                    <div class="badge-tooltip">Quiz Champion</div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="subsection-container" class="subsection-nav"></div>
+        
+        <div class="content-section" id="content-container">
+            <!-- Content will be dynamically loaded here -->
+        </div>
+    </div>
+    
+    <!-- Level up notification -->
+    <div class="level-up" id="level-up-notification">
+        <div class="level-up-title">Level Up!</div>
+        <div class="level-up-icon">🌟</div>
+        <div class="level-up-message" id="level-up-message"></div>
+        <button class="btn" onclick="document.getElementById('level-up-notification').classList.remove('show')">Continue</button>
+    </div>
+
+    <script>
+        // Main application state
+        const app = {
+            activeSection: 'home',
+            activeSubsection: null,
+            quizActive: false,
+            quizCompleted: false,
+            currentQuestionIndex: 0,
+            quizScore: 0,
+            selectedAnswers: {},
+            points: 0,
+            progress: {
+                transmission: 0,
+                clutch: 0,
+                gearbox: 0,
+                driveline: 0,
+                quiz: 0
+            },
+            achievements: {
+                transmission: false,
+                clutch: false,
+                gearbox: false, 
+                driveline: false,
+                quiz: false
+            },
+            completedActivities: [],
+            level: 1
+        };
+
+        // Load saved data from localStorage if available
+        function loadSavedData() {
+            try {
+                const savedData = localStorage.getItem('motorsportAppData');
+                if (savedData) {
+                    const parsedData = JSON.parse(savedData);
+                    app.points = parsedData.points || 0;
+                    app.progress = parsedData.progress || app.progress;
+                    app.achievements = parsedData.achievements || app.achievements;
+                    app.completedActivities = parsedData.completedActivities || [];
+                    app.level = parsedData.level || 1;
+                    
+                    // Update UI with loaded data
+                    updatePointsDisplay();
+                    updateProgressBar();
+                    updateAchievements();
+                }
+            } catch (error) {
+                console.error("Error loading saved data:", error);
+                // Reset to defaults if there's an error
+                resetAppData();
+            }
+        }
+        
+        // Save data to localStorage
+        function saveData() {
+            try {
+                const dataToSave = {
+                    points: app.points,
+                    progress: app.progress,
+                    achievements: app.achievements,
+                    completedActivities: app.completedActivities,
+                    level: app.level
+                };
+                localStorage.setItem('motorsportAppData', JSON.stringify(dataToSave));
+            } catch (error) {
+                console.error("Error saving data:", error);
+            }
+        }
+        
+        // Reset app data to defaults
+        function resetAppData() {
+            app.points = 0;
+            app.progress = {
+                transmission: 0,
+                clutch: 0,
+                gearbox: 0,
+                driveline: 0,
+                quiz: 0
+            };
+            app.achievements = {
+                transmission: false,
+                clutch: false,
+                gearbox: false, 
+                driveline: false,
+                quiz: false
+            };
+            app.completedActivities = [];
+            app.level = 1;
+            
+            // Update UI
+            updatePointsDisplay();
+            updateProgressBar();
+            updateAchievements();
+            
+            // Clear localStorage
+            try {
+                localStorage.removeItem('motorsportAppData');
+            } catch (error) {
+                console.error("Error clearing localStorage:", error);
+            }
+        }
+        
+        // Award points to the user
+        function awardPoints(amount, reason) {
+            app.points += amount;
+            updatePointsDisplay();
+            
+            // Show floating animation
+            const pointsAnimation = document.createElement('div');
+            pointsAnimation.classList.add('points-animation');
+            pointsAnimation.textContent = `+${amount} points`;
+            
+            // Position near the element that triggered the points
+            const rect = document.querySelector('.points-display').getBoundingClientRect();
+            pointsAnimation.style.left = `${rect.left}px`;
+            pointsAnimation.style.top = `${rect.top + 30}px`;
+            
+            document.body.appendChild(pointsAnimation);
+            
+            // Remove after animation completes
+            setTimeout(() => {
+                document.body.removeChild(pointsAnimation);
+            }, 1500);
+            
+            // Check for level up
+            checkLevelUp();
+            
+            // Save data
+            saveData();
+        }
+        
+        // Update the points display
+        function updatePointsDisplay() {
+            document.getElementById('points-counter').textContent = app.points;
+        }
+        
+        // Update progress for a section
+        function updateSectionProgress(section, value) {
+            if (app.progress[section] < value) {
+                app.progress[section] = value;
+                updateProgressBar();
+                
+                // Check for achievement
+                if (value >= 100 && !app.achievements[section]) {
+                    app.achievements[section] = true;
+                    updateAchievements();
+                    
+                    // Award points for completing a section
+                    awardPoints(50, `Completed ${section} section!`);
+                    
+                    // Show achievement notification
+                    showLevelUp(`You've mastered the ${section} section!`, `${section}-master`);
+                }
+                
+                // Save data
+                saveData();
+            }
+        }
+        
+        // Update the overall progress bar
+        function updateProgressBar() {
+            const progressValues = Object.values(app.progress);
+            const totalSections = progressValues.length;
+            const overallProgress = progressValues.reduce((sum, value) => sum + value, 0) / totalSections;
+            
+            document.getElementById('progress-fill').style.width = `${overallProgress}%`;
+        }
+        
+        // Update achievement badges
+        function updateAchievements() {
+            for (const [achievement, earned] of Object.entries(app.achievements)) {
+                if (earned) {
+                    const badge = document.querySelector(`.badge[data-achievement="${achievement}"]`);
+                    if (badge) {
+                        badge.classList.add('earned');
+                    }
+                }
+            }
+        }
+        
+        // Check for level up based on points
+        function checkLevelUp() {
+            const pointsThresholds = [0, 100, 250, 500, 1000, 2000];
+            const newLevel = pointsThresholds.findIndex(threshold => app.points < threshold);
+            const actualNewLevel = newLevel === -1 ? pointsThresholds.length : newLevel;
+            
+            if (actualNewLevel > app.level) {
+                app.level = actualNewLevel;
+                showLevelUp(`You've reached level ${app.level}!`, 'level-up');
+                saveData();
+            }
+        }
+        
+        // Show level up notification
+        function showLevelUp(message, type) {
+            const levelUpNotification = document.getElementById('level-up-notification');
+            const levelUpMessage = document.getElementById('level-up-message');
+            
+            levelUpMessage.textContent = message;
+            levelUpNotification.classList.add('show');
+            
+            // Hide after 5 seconds
+            setTimeout(() => {
+                levelUpNotification.classList.remove('show');
+            }, 5000);
+        }
+        
+        // Track activity completion
+        function completeActivity(activityId) {
+            if (!app.completedActivities.includes(activityId)) {
+                app.completedActivities.push(activityId);
+                awardPoints(10, `Completed activity: ${activityId}`);
+                saveData();
+                return true;
+            }
+            return false;
+        }
+        
+        // Initialize drag and drop functionality
+        function initializeDragDrop(activityId) {
+            const dragItems = document.querySelectorAll('.drag-item');
+            const dropTargets = document.querySelectorAll('.drop-target');
+            
+            let draggedItem = null;
+            
+            dragItems.forEach(item => {
+                item.addEventListener('dragstart', function() {
+                    draggedItem = this;
+                    this.classList.add('dragging');
+                });
+                
+                item.addEventListener('dragend', function() {
+                    this.classList.remove('dragging');
+                });
+                
+                // For touch devices
+                item.addEventListener('touchstart', function(e) {
+                    draggedItem = this;
+                    this.classList.add('dragging');
+                });
+            });
+            
+            dropTargets.forEach(target => {
+                target.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    this.classList.add('highlight');
+                });
+                
+                target.addEventListener('dragleave', function() {
+                    this.classList.remove('highlight');
+                });
+                
+                target.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('highlight');
+                    
+                    if (draggedItem) {
+                        const correctTarget = this.dataset.accepts === draggedItem.dataset.type;
+                        
+                        if (correctTarget) {
+                            this.innerHTML = '';
+                            this.appendChild(draggedItem);
+                            this.classList.add('correct');
+                            
+                            // Check if all items are correctly placed
+                            const allCorrect = Array.from(dropTargets).every(target => {
+                                return target.children.length > 0 || !target.dataset.accepts;
+                            });
+                            
+                            if (allCorrect) {
+                                if (completeActivity(activityId)) {
+                                    updateSectionProgress(app.activeSection, 
+                                        app.progress[app.activeSection] + 20);
+                                }
+                            }
+                        } else {
+                            this.classList.add('incorrect');
+                            setTimeout(() => {
+                                this.classList.remove('incorrect');
+                            }, 1000);
+                        }
+                    }
+                });
+                
+                // For touch devices
+                target.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('highlight');
+                    
+                    if (draggedItem) {
+                        // Similar logic as drop event
+                        const correctTarget = this.dataset.accepts === draggedItem.dataset.type;
+                        
+                        if (correctTarget) {
+                            this.innerHTML = '';
+                            this.appendChild(draggedItem);
+                            this.classList.add('correct');
+                            
+                            // Check if all items are correctly placed
+                            const allCorrect = Array.from(dropTargets).every(target => {
+                                return target.children.length > 0 || !target.dataset.accepts;
+                            });
+                            
+                            if (allCorrect) {
+                                if (completeActivity(activityId)) {
+                                    updateSectionProgress(app.activeSection, 
+                                        app.progress[app.activeSection] + 20);
+                                }
+                            }
+                        } else {
+                            this.classList.add('incorrect');
+                            setTimeout(() => {
+                                this.classList.remove('incorrect');
+                            }, 1000);
+                        }
+                        
+                        draggedItem.classList.remove('dragging');
+                        draggedItem = null;
+                    }
+                });
+            });
+        }
+        
+        // Initialize knowledge check functionality
+        function initializeKnowledgeChecks() {
+            const knowledgeOptions = document.querySelectorAll('.knowledge-option');
+            
+            knowledgeOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const questionId = this.closest('.knowledge-check').dataset.id;
+                    const correctAnswer = this.closest('.knowledge-check').dataset.correct;
+                    const feedback = this.closest('.knowledge-check').querySelector('.knowledge-feedback');
+                    
+                    // Remove previous selections
+                    this.closest('.knowledge-options').querySelectorAll('.knowledge-option').forEach(opt => {
+                        opt.classList.remove('selected', 'correct', 'incorrect');
+                    });
+                    
+                    // Mark this option as selected
+                    this.classList.add('selected');
+                    
+                    const isCorrect = this.dataset.option === correctAnswer;
+                    if (isCorrect) {
+                        this.classList.add('correct');
+                        feedback.textContent = "Correct! Well done.";
+                        feedback.className = "knowledge-feedback correct";
+                        
+                        // Award points if this is the first time answering correctly
+                        if (completeActivity(`knowledge-${questionId}`)) {
+                            awardPoints(5, "Correct knowledge check");
+                        }
+                    } else {
+                        this.classList.add('incorrect');
+                        feedback.textContent = "Not quite right. Try again!";
+                        feedback.className = "knowledge-feedback incorrect";
+                    }
+                });
+            });
+        }
+        
+        // Initialize hotspots on interactive diagrams
+        function initializeHotspots() {
+            const hotspots = document.querySelectorAll('.hotspot');
+            
+            hotspots.forEach(hotspot => {
+                hotspot.addEventListener('click', function() {
+                    const tooltip = this.nextElementSibling;
+                    
+                    // Toggle tooltip visibility with a click on mobile
+                    if (window.innerWidth <= 768) {
+                        if (tooltip.style.opacity === "1") {
+                            tooltip.style.opacity = "0";
+                        } else {
+                            // Hide all other tooltips first
+                            document.querySelectorAll('.tooltip').forEach(t => {
+                                t.style.opacity = "0";
+                            });
+                            tooltip.style.opacity = "1";
+                        }
+                    }
+                    
+                    // Award points for exploring diagrams
+                    const diagramId = this.closest('.interactive-diagram').dataset.id;
+                    const hotspotId = this.dataset.id;
+                    completeActivity(`hotspot-${diagramId}-${hotspotId}`);
+                });
+            });
+        }
+
+        // Section definitions with their subsections
+        const sections = {
+            home: { title: 'Welcome to Motorsport Maintenance Learning Hub', subsections: [] },
+            transmission: { 
+                title: 'Transmission Systems', 
+                subsections: [
+                    { id: 'dismantling', title: 'Dismantling & Replacement' },
+                    { id: 'inspection', title: 'Inspection & Testing' },
+                    { id: 'faults', title: 'Faults & Symptoms' }
+                ]
+            },
+            clutch: { 
+                title: 'Clutch Systems', 
+                subsections: [
+                    { id: 'operating-systems', title: 'Operating Systems' },
+                    { id: 'friction-clutches', title: 'Friction Clutches' }
+                ]
+            },
+            gearbox: { 
+                title: 'Manual Gearbox', 
+                subsections: [
+                    { id: 'types', title: 'Gearbox Types' },
+                    { id: 'construction', title: 'Construction & Operation' },
+                    { id: 'bearings', title: 'Bearings & Lubrication' }
+                ]
+            },
+            driveline: { 
+                title: 'Driveline Components', 
+                subsections: [
+                    { id: 'components', title: 'Driveline Components' },
+                    { id: 'joints', title: 'Universal & CV Joints' },
+                    { id: 'differential', title: 'Differential & Final Drive' }
+                ]
+            },
+            quiz: { title: 'Test Your Knowledge', subsections: [] }
+        };
+
+        // Quiz questions
+        const quizQuestions = [
+            {
+                question: "What are the primary safety precautions when dismantling transmission systems?",
+                options: [
+                    "Using proper lifting equipment",
+                    "Wearing PPE and protecting vehicle",
+                    "Working at high speeds",
+                    "Ignoring fluid leaks"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Why must replacement components meet OES specifications?",
+                options: [
+                    "To save money",
+                    "For warranty, performance, and safety requirements",
+                    "To make installation easier",
+                    "There's no specific reason"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "What type of joint allows for steering movement in drive shafts?",
+                options: [
+                    "Rigid joint",
+                    "Constant velocity joint",
+                    "Fixed joint",
+                    "Sliding coupling"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "What are the three types of stresses applied to drive shafts?",
+                options: [
+                    "Compression, expansion, rotation",
+                    "Torsional, bending, and shear",
+                    "Hydraulic, mechanical, electrical",
+                    "None of these"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "What is the purpose of a clutch in a motorsport vehicle?",
+                options: [
+                    "To increase speed",
+                    "To engage and disengage power transmission",
+                    "To reduce engine temperature",
+                    "To control steering"
+                ],
+                correctAnswer: 1
+            }
+        ];
+
+        // Content for each subsection
+        const content = {
+            home: `
+                <div class="home-content">
+                    <h1>Welcome to Motorsport Maintenance Learning Hub</h1>
+                    <p>This interactive learning platform covers core topics from the L2 Diploma in Motorsport Maintenance.</p>
+                    <p>Explore transmission systems, clutches, gearboxes, and driveline components through interactive lessons.</p>
+                    
+                    <div class="flip-cards">
+                        <div class="flip-card">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front">
+                                    <h3>Transmission Systems</h3>
+                                </div>
+                                <div class="flip-card-back">
+                                    <p>Learn about dismantling, inspection, and fault diagnosis in motorsport transmissions.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flip-card">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front">
+                                    <h3>Clutch Systems</h3>
+                                </div>
+                                <div class="flip-card-back">
+                                    <p>Discover different clutch types and their operation in high-performance vehicles.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flip-card">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front">
+                                    <h3>Gearbox Systems</h3>
+                                </div>
+                                <div class="flip-card-back">
+                                    <p>Explore manual gearboxes, synchromesh operation, and maintenance techniques.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flip-card">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front">
+                                    <h3>Driveline Components</h3>
+                                </div>
+                                <div class="flip-card-back">
+                                    <p>Learn about propshafts, CV joints, and differential systems in motorsport applications.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 2rem;">
+                        <h2>Your Learning Journey</h2>
+                        <p>Complete activities and quizzes to earn points and achievements. Track your progress and become a motorsport maintenance expert!</p>
+                        
+                        <h3>How to Use This App:</h3>
+                        <ul>
+                            <li>Explore each section to learn about different systems</li>
+                            <li>Interact with diagrams by clicking on numbered points</li>
+                            <li>Complete drag-and-drop activities to test your knowledge</li>
+                            <li>Take quizzes to earn points and achievements</li>
+                            <li>Your progress is saved automatically</li>
+                        </ul>
+                        
+                        <button class="btn btn-large" onclick="navigateTo('quiz')" style="margin-top: 1rem;">Test Your Knowledge</button>
+                    </div>
+                </div>
+            `,
+            
+            "transmission-dismantling": `
+                <h1>Dismantling & Replacement of Transmission Units</h1>
+                
+                <div class="section-objective">
+                    <h3>📋 Your Tasks:</h3>
+                    <ol>
+                        <li>Learn the preparation steps and safety precautions for transmission work</li>
+                        <li>Understand OES specification requirements for replacement parts</li>
+                        <li>Complete the component matching activity</li>
+                        <li>Answer the knowledge check questions</li>
+                    </ol>
+                </div>
+                
+                <h2>Preparation & Testing</h2>
+                <p>Before dismantling any transmission system, proper preparation is essential:</p>
+                <ul>
+                    <li>Select appropriate tools and equipment</li>
+                    <li>Use electrical meters for diagnostics when appropriate</li>
+                    <li>Ensure all safety precautions are in place</li>
+                </ul>
+                
+                <div class="knowledge-check" data-id="transmission-safety" data-correct="b">
+                    <div class="knowledge-question">What is the most important consideration when preparing to dismantle a transmission system?</div>
+                    <div class="knowledge-options">
+                        <div class="knowledge-option" data-option="a">Selecting the right tools</div>
+                        <div class="knowledge-option" data-option="b">Safety precautions</div>
+                        <div class="knowledge-option" data-option="c">Speed of disassembly</div>
+                        <div class="knowledge-option" data-option="d">Cost of parts</div>
+                    </div>
+                    <div class="knowledge-feedback"></div>
+                </div>
+                
+                <h2>Safety Precautions</h2>
+                <ul>
+                    <li>Always wear appropriate PPE (Personal Protective Equipment)</li>
+                    <li>Ensure vehicle protection is in place to prevent damage</li>
+                    <li>Follow logical and systematic processes for disassembly</li>
+                </ul>
+                
+                <div class="interactive-diagram" data-id="ppe-diagram">
+                    <div class="diagram-container">
+                        <div class="hotspot" style="top: 20%; left: 30%" data-id="1">1</div>
+                        <div class="tooltip" style="top: 20%; left: 30%">Safety Glasses: Protect eyes from fluids and debris</div>
+                        
+                        <div class="hotspot" style="top: 40%; left: 60%" data-id="2">2</div>
+                        <div class="tooltip" style="top: 40%; left: 60%">Gloves: Protect hands from sharp edges and chemicals</div>
+                        
+                        <div class="hotspot" style="top: 70%; left: 40%" data-id="3">3</div>
+                        <div class="tooltip" style="top: 70%; left: 40%">Safety Boots: Protect feet from heavy components</div>
+                        
+                        <img src="/api/placeholder/600/400" alt="PPE for Transmission Work" class="diagram-image">
+                    </div>
+                </div>
+                
+                <h2>OES Specifications</h2>
+                <p>Replacement components must meet Original Equipment Specifications (OES) for:</p>
+                <ul>
+                    <li>Warranty requirements</li>
+                    <li>Performance specifications</li>
+                    <li>Safety requirements</li>
+                </ul>
+                
+                <div class="knowledge-check" data-id="oes-specs" data-correct="c">
+                    <div class="knowledge-question">Why is it critical to use OES-compliant parts in motorsport applications?</div>
+                    <div class="knowledge-options">
+                        <div class="knowledge-option" data-option="a">They are less expensive</div>
+                        <div class="knowledge-option" data-option="b">They are easier to install</div>
+                        <div class="knowledge-option" data-option="c">They ensure optimal performance and safety</div>
+                        <div class="knowledge-option" data-option="d">They are more widely available</div>
+                    </div>
+                    <div class="knowledge-feedback"></div>
+                </div>
+                
+                <div class="drag-drop-activity" data-id="transmission-components">
+                    <h3>Activity: Match the Component to its Purpose</h3>
+                    <p>Drag each component to its corresponding purpose in transmission systems.</p>
+                    
+                    <div class="drag-items">
+                        <div class="drag-item" draggable="true" data-type="synchromesh">Synchromesh</div>
+                        <div class="drag-item" draggable="true" data-type="clutch">Clutch</div>
+                        <div class="drag-item" draggable="true" data-type="differential">Differential</div>
+                        <div class="drag-item" draggable="true" data-type="gearset">Gear Set</div>
+                    </div>
+                    
+                    <div class="drop-targets">
+                        <div>
+                            <div class="drop-target-label">Engages/Disengages Power</div>
+                            <div class="drop-target" data-accepts="clutch"></div>
+                        </div>
+                        <div>
+                            <div class="drop-target-label">Smooth Gear Changes</div>
+                            <div class="drop-target" data-accepts="synchromesh"></div>
+                        </div>
+                        <div>
+                            <div class="drop-target-label">Wheels at Different Speeds</div>
+                            <div class="drop-target" data-accepts="differential"></div>
+                        </div>
+                        <div>
+                            <div class="drop-target-label">Changes Torque Ratio</div>
+                            <div class="drop-target" data-accepts="gearset"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h2>Refitting Procedures</h2>
+                <p>When refitting transmission components:</p>
+                <ul>
+                    <li>Follow manufacturer's torque specifications</li>
+                    <li>Ensure correct alignment of all components</li>
+                    <li>Perform post-installation testing</li>
+                </ul>
+                
+                <div class="section-summary">
+                    <h3>Section Summary</h3>
+                    <p>In this section, you've learned about:</p>
+                    <ul>
+                        <li>Proper preparation and safety precautions for transmission work</li>
+                        <li>The importance of OES specifications in replacement parts</li>
+                        <li>Key components in a transmission system and their functions</li>
+                        <li>Procedures for correctly refitting transmission components</li>
+                    </ul>
+                    <p>Continue to the next section to learn about inspection and testing techniques.</p>
+                </div>
+            `,
+            
+            "transmission-inspection": `
+                <h1>Inspection & Testing of Transmission Systems</h1>
+                
+                <div class="section-objective">
+                    <h3>📋 Your Tasks:</h3>
+                    <ol>
+                        <li>Learn proper inspection techniques for clutch systems</li>
+                        <li>Understand gearbox and driveline inspection procedures</li>
+                        <li>Complete the inspection checklist activity</li>
+                        <li>Test your knowledge with interactive questions</li>
+                    </ol>
+                </div>
+                
+                <h2>Techniques for Clutch Inspection</h2>
+                <p>Proper clutch inspection involves checking:</p>
+                <ul>
+                    <li>Clearances between components</li>
+                    <li>Pedal and lever settings for proper engagement</li>
+                    <li>Condition of cables and linkages</li>
+                    <li>Hydraulic system pressure and function</li>
+                    <li>Evidence of leaks in the system</li>
+                    <li>Proper adjustments</li>
+                </ul>
+                
+                <div class="activity-container">
+                    <h3>Activity: Clutch Inspection Checklist</h3>
+                    <p>Drag each inspection item to the correct category based on what you would check during a motorsport clutch inspection.</p>
+                    
+                    <div class="drag-drop-activity" data-id="clutch-inspection">
+                        <div class="drag-items">
+                            <div class="drag-item" draggable="true" data-type="mechanical">Pedal free play</div>
+                            <div class="drag-item" draggable="true" data-type="mechanical">Release bearing condition</div>
+                            <div class="drag-item" draggable="true" data-type="hydraulic">Fluid level</div>
+                            <div class="drag-item" draggable="true" data-type="hydraulic">Master cylinder leaks</div>
+                            <div class="drag-item" draggable="true" data-type="wear">Friction material thickness</div>
+                            <div class="drag-item" draggable="true" data-type="wear">Pressure plate heat damage</div>
+                        </div>
+                        
+                        <div class="drop-targets">
+                            <div>
+                                <div class="drop-target-label">Mechanical Checks</div>
+                                <div class="drop-target" data-accepts="mechanical"></div>
+                            </div>
+                            <div>
+                                <div class="drop-target-label">Hydraulic System Checks</div>
+                                <div class="drop-target" data-accepts="hydraulic"></div>
+                            </div>
+                            <div>
+                                <div class="drop-target-label">Wear Indicators</div>
+                                <div class="drop-target" data-accepts="wear"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h2>Gearbox Inspection</h2>
+                <p>When inspecting gearboxes, pay attention to:</p>
+                <ul>
+                    <li>Oil leaks from seals or gaskets</li>
+                    <li>Gear selection operation</li>
+                    <li>Synchromesh function during gear changes</li>
+                    <li>Unusual noises during operation</li>
+                </ul>
+                
+                <div class="interactive-diagram" data-id="gearbox-inspection">
+                    <div class="diagram-container">
+                        <div class="hotspot" style="top: 25%; left: 30%" data-id="1">1</div>
+                        <div class="tooltip" style="top: 25%; left: 30%">Input Shaft Seal: Check for oil leaks around the bellhousing</div>
+                        
+                        <div class="hotspot" style="top: 40%; left: 70%" data-id="2">2</div>
+                        <div class="tooltip" style="top: 40%; left: 70%">Selector Fork: Verify smooth movement and no excessive wear</div>
+                        
+                        <div class="hotspot" style="top: 70%; left: 50%" data-id="3">3</div>
+                        <div class="tooltip" style="top: 70%; left: 50%">Output Shaft Bearing: Listen for unusual noises during operation</div>
+                        
+                        <img src="/api/placeholder/600/350" alt="Gearbox Inspection Points" class="diagram-image">
+                    </div>
+                </div>
+                
+                <div class="knowledge-check" data-id="gearbox-noise" data-correct="c">
+                    <div class="knowledge-question">During gearbox inspection, a whining noise that increases with speed most likely indicates:</div>
+                    <div class="knowledge-options">
+                        <div class="knowledge-option" data-option="a">Low oil level</div>
+                        <div class="knowledge-option" data-option="b">Clutch slippage</div>
+                        <div class="knowledge-option" data-option="c">Worn bearing or gear damage</div>
+                        <div class="knowledge-option" data-option="d">Normal operation</div>
+                    </div>
+                    <div class="knowledge-feedback"></div>
+                </div>
+                
+                <h2>Driveline Inspection</h2>
+                <p>For driveline components, check:</p>
+                <ul>
+                    <li>Security of all mountings</li>
+                    <li>Condition of rubber boots</li>
+                    <li>Signs of leaks from seals</li>
+                    <li>Proper alignment of components</li>
+                    <li>Balance weights (where applicable)</li>
+                </ul>
+                
+                <div class="knowledge-check" data-id="cv-joint" data-correct="b">
+                    <div class="knowledge-question">What is the most common cause of CV joint failure in motorsport applications?</div>
+                    <div class="knowledge-options">
+                        <div class="knowledge-option" data-option="a">Excessive torque</div>
+                        <div class="knowledge-option" data-option="b">Damaged or split rubber boot</div>
+                        <div class="knowledge-option" data-option="c">Improper installation</div>
+                        <div class="knowledge-option" data-option="d">Normal wear and tear</div>
+                    </div>
+                    <div class="knowledge-feedback"></div>
+                </div>
+                
+                <div class="section-summary">
+                    <h3>Section Summary</h3>
+                    <p>In this section, you've learned about:</p>
+                    <ul>
+                        <li>Techniques for inspecting clutch components and systems</li>
+                        <li>Key areas to check when inspecting gearboxes</li>
+                        <li>Methods for identifying common issues in driveline components</li>
+                        <li>The importance of systematic inspection processes</li>
+                    </ul>
+                    <p>Continue to the next section to learn about common faults and symptoms in transmission systems.</p>
+                </div>
+            `,
+            
+            "transmission-faults": `
+                <h1>Faults & Symptoms in Transmission Systems</h1>
+                
+                <div class="section-objective">
+                    <h3>📋 Your Tasks:</h3>
+                    <ol>
+                        <li>Learn to recognize common transmission system faults</li>
+                        <li>Understand symptoms for clutch, gearbox, and driveline problems</li>
+                        <li>Complete the fault diagnosis simulation</li>
+                        <li>Test your troubleshooting skills with the interactive activities</li>
+                    </ol>
+                </div>
+                
+                <h2>Common Transmission System Faults</h2>
+                <p>Recognizing fault symptoms is key to effective diagnosis:</p>
+                
+                <h3>Clutch Faults</h3>
+                <ul>
+                    <li>Slipping - Engine revs increase but vehicle speed doesn't match</li>
+                    <li>Juddering - Vehicle shakes during engagement</li>
+                    <li>Difficult engagement - Excessive pedal force required</li>
+                </ul>
+                
+                <div class="activity-container">
+                    <h3>Activity: Clutch Fault Diagnosis</h3>
+                    <p>Match each symptom to the most likely clutch fault.</p>
+                    
+                    <div class="drag-drop-activity" data-id="clutch-faults">
+                        <div class="drag-items">
+                            <div class="drag-item" draggable="true" data-type="worn">Engine revs but vehicle moves slowly</div>
+                            <div class="drag-item" draggable="true" data-type="contaminated">Vibration during engagement</div>
+                            <div class="drag-item" draggable="true" data-type="hydraulic">Pedal stays on floor after pressing</div>
+                            <div class="drag-item" draggable="true" data-type="bearing">Noise when pressing pedal</div>
+                        </div>
+                        
+                        <div class="drop-targets">
+                            <div>
+                                <div class="drop-target-label">Worn Friction Material</div>
+                                <div class="drop-target" data-accepts="worn"></div>
+                            </div>
+                            <div>
+                                <div class="drop-target-label">Contaminated Surfaces</div>
+                                <div class="drop-target" data-accepts="contaminated"></div>
+                            </div>
+                            <div>
+                                <div class="drop-target-label">Hydraulic System Failure</div>
+                                <div class="drop-target" data-accepts="hydraulic"></div>
+                            </div>
+                            <div>
+                                <div class="drop-target-label">Release Bearing Issue</div>
+                                <div class="drop-target" data-accepts="bearing"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3>Gearbox Faults</h3>
+                <ul>
+                    <li>Difficulty selecting gears</li>
+                    <li>Grinding during gear changes</li>
+                    <li>Jumping out of gear</li>
+                    <li>Unusual noise during operation</li>
+                </ul>
+                
+                <div class="knowledge-check" data-id="gearbox-faults" data-correct="b">
+                    <div class="knowledge-question">A motorsport gearbox that jumps out of gear during acceleration is most likely experiencing:</div>
+                    <div class="knowledge-options">
+                        <div class="knowledge-option" data-option="a">Worn synchromesh</div>
+                        <div class="knowledge-option" data-option="b">Weak or broken detent springs</div>
+                        <div class="knowledge-option" data-option="c">Excessive end float</div>
+                        <div class="knowledge-option" data-option="d">Incorrect gear oil</div>
+                    </div>
+                    <div class="knowledge-feedback"></div>
+                </div>
+                
+                <h3>Driveline Faults</h3>
+                <ul>
+                    <li>Vibration at specific speeds</li>
+                    <li>Clicking noises when turning (CV joints)</li>
+                    <li>Clunking during direction changes</li>
+                </ul>
+                
+                <div class="interactive-diagram" data-id="driveline-faults">
+                    <div class="diagram-container">
+                        <div class="hotspot" style="top: 25%; left: 30%" data-id="1">1</div>
+                        <div class="tooltip" style="top: 25%; left: 30%">Universal Joint: Clunking noise during acceleration/deceleration indicates wear</div>
+                        
+                        <div class="hotspot" style="top: 55%; left: 70%" data-id="2">2</div>
+                        <div class="tooltip" style="top: 55%; left: 70%">CV Joint: Clicking noise when turning indicates internal damage</div>
+                        
+                        <div class="hotspot" style="top: 75%; left: 40%" data-id="3">3</div>
+                        <div class="tooltip" style="top: 75%; left: 40%">Propshaft: Vibration that changes with speed indicates balance issue</div>
+                        
+                        <img src="/api/placeholder/600/350" alt="Driveline Fault Locations" class="diagram-image">
+                    </div>
+                </div>
+                
+                <h3>Universal/CV Joint Issues</h3>
+                <ul>
+                    <li>Misalignment symptoms</li>
+                    <li>Accelerated wear patterns</li>
+                </ul>
+                
+                <div class="activity-container">
+                    <h3>Activity: Fault Diagnosis Challenge</h3>
+                    <p>You're a motorsport technician diagnosing a race car. Based on the symptoms, identify the most likely issue.</p>
+                    
+                    <div class="knowledge-check" data-id="fault-diagnosis-1" data-correct="c">
+                        <div class="knowledge-question">Scenario 1: The driver reports that when accelerating hard out of corners, the engine revs increase significantly but the car doesn't accelerate as expected. What's the most likely cause?</div>
+                        <div class="knowledge-options">
+                            <div class="knowledge-option" data-option="a">Faulty engine management system</div>
+                            <div class="knowledge-option" data-option="b">Incorrect gear ratios</div>
+                            <div class="knowledge-option" data-option="c">Clutch slippage</div>
+                            <div class="knowledge-option" data-option="d">Wheel spin due to poor grip</div>
+                        </div>
+                        <div class="knowledge-feedback"></div>
+                    </div>
+                    
+                    <div class="knowledge-check" data-id="fault-diagnosis-2" data-correct="b">
+                        <div class="knowledge-question">Scenario 2: The car makes a rhythmic clicking noise when turning, but only under power. The noise gets louder with tighter turns. What should you check first?</div>
+                        <div class="knowledge-options">
+                            <div class="knowledge-option" data-option="a">Wheel bearings</div>
+                            <div class="knowledge-option" data-option="b">CV joints and boots</div>
+                            <div class="knowledge-option" data-option="c">Differential operation</div>
+                            <div class="knowledge-option" data-option="d">Suspension components</div>
+                        </div>
+                        <div class="knowledge-feedback"></div>
+                    </div>
+                </div>
+                
+                <h2>Related Systems</h2>
+                <p>Remember that transmission faults may also involve:</p>
+                <ul>
+                    <li>Mechanical components</li>
+                    <li>Electrical systems (sensors, solenoids)</li>
+                    <li>Hydraulic systems (pressure, fluid quality)</li>
+                </ul>
+                
+                <div class="section-summary">
+                    <h3>Section Summary</h3>
+                    <p>In this section, you've learned about:</p>
+                    <ul>
+                        <li>Common faults in clutch systems and their symptoms</li>
+                        <li>Typical gearbox issues and how to identify them</li>
+                        <li>Driveline problems and their diagnostic indicators</li>
+                        <li>How to approach systematic fault diagnosis</li>
+                    </ul>
+                    <p>Continue to the Clutch Systems section to learn more about clutch operation and maintenance.</p>
+                </div>
+            `,
+            
+            "clutch-operating-systems": `
+                <h1>Clutch Operating Systems</h1>
+                
+                <div class="section-objective">
+                    <h3>📋 Your Tasks:</h3>
+                    <ol>
+                        <li>Learn about different clutch operating mechanisms</li>
+                        <li>Understand hydraulic clutch system components</li>
+                        <li>Complete the clutch system flow activity</li>
+                        <li>Identify key components in the interactive diagram</li>
+                    </ol>
+                </div>
+                
+                <h2>Clutch Operating Mechanisms</h2>
+                <p>Different mechanisms control clutch engagement:</p>
+                <ul>
+                    <li>Pedal and lever mechanical systems</li>
+                    <li>Hydraulic operated systems</li>
+                    <li>Cable operated mechanisms</li>
+                    <li>Electronic clutch control (in advanced systems)</li>
+                </ul>
+                
+                <div class="knowledge-check" data-id="clutch-types" data-correct="b">
+                    <div class="knowledge-question">Which clutch system provides the most consistent pedal feel in high-performance applications?</div>
+                    <div class="knowledge-options">
+                        <div class="knowledge-option" data-option="a">Mechanical cable system</div>
+                        <div class="knowledge-option" data-option="b">Hydraulic system</div>
+                        <div class="knowledge-option" data-option="c">Direct linkage</div>
+                        <div class="knowledge-option" data-option="d">Spring-loaded system</div>
+                    </div>
+                    <div class="knowledge-feedback"></div>
+                </div>
+                
+                <h2>Hydraulic Components</h2>
+                <p>Hydraulic clutch systems include:</p>
+                <ul>
+                    <li>Master cylinder - Converts mechanical force to hydraulic pressure</li>
+                    <li>Slave cylinder - Applies force to release bearing</li>
+                    <li>Hydraulic pipes - Transfer pressure between cylinders</li>
+                    <li>Fluid level indicators - Monitor system condition</li>
+                </ul>
+                
+                <div class="interactive-diagram" data-id="hydraulic-clutch">
+                    <div class="diagram-container">
+                        <div class="hotspot" style="top: 30%; left: 25%" data-id="1">1</div>
+                        <div class="tooltip" style="top: 30%; left: 25%">Master Cylinder: Converts pedal force to hydraulic pressure</div>
+                        
+                        <div class="hotspot" style="top: 30%; left: 75%" data-id="2">2</div>
+                        <div class="tooltip" style="top: 30%; left: 75%">Slave Cylinder: Applies force to the release bearing</div>
+                        
+                        <div class="hotspot" style="top: 70%; left: 50%" data-id="3">3</div>
+                        <div class="tooltip" style="top: 70%; left: 50%">Hydraulic Line: Transfers pressure between cylinders</div>
+                        
+                        <img src="/api/placeholder/600/300" alt="Hydraulic Clutch System Diagram" class="diagram-image">
+                    </div>
+                </div>
+                
+                <div class="activity-container">
+                    <h3>Activity: Clutch System Operation Flow</h3>
+                    <p>Drag the components in the correct sequence of operation in a hydraulic clutch system.</p>
+                    
+                    <div class="drag-drop-activity" data-id="clutch-system-flow">
+                        <div class="drag-items">
+                            <div class="drag-item" draggable="true" data-type="4">Release Bearing</div>
+                            <div class="drag-item" draggable="true" data-type="1">Clutch Pedal</div>
+                            <div class="drag-item" draggable="true" data-type="3">Slave Cylinder</div>
+                            <div class="drag-item" draggable="true" data-type="2">Master Cylinder</div>
+                            <div class="drag-item" draggable="true" data-type="5">Pressure Plate</div>
+                        </div>
+                        
+                        <div class="drop-targets">
+                            <div>
+                                <div class="drop-target-label">Step 1</div>
+                                <div class="drop-target" data-accepts="1"></div>
+                            </div>
+                            <div>
+                                <div class="drop-target-label">Step 2</div>
+                                <div class="drop-target" data-accepts="2"></div>
+                            </div>
+                            <div>
+                                <div class="drop-target-label">Step 3</div>
+                                <div class="drop-target" data-accepts="3"></div>
+                            </div>
+                            <div>
+                                <div class="drop-target-label">Step 4</div>
+                                <div class="drop-target" data-accepts="4"></div>
+                            </div>
+                            <div>
+                                <div class="drop-target-label">Step 5</div>
+                                <div class="drop-target" data-accepts="5"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="knowledge-check" data-id="clutch-fluid" data-correct="c">
+                    <div class="knowledge-question">What type of fluid is typically used in motorsport hydraulic clutch systems?</div>
+                    <div class="knowledge-options">
+                        <div class="knowledge-option" data-option="a">Engine oil</div>
+                        <div class="knowledge-option" data-option="b">Transmission fluid</div>
+                        <div class="knowledge-option" data-option="c">Brake fluid</div>
+                        <div class="knowledge-option" data-option="d">Power steering fluid</div>
+                    </div>
+                    <div class="knowledge-feedback"></div>
+                </div>
+                
+                <div class="section-summary">
+                    <h3>Section Summary</h3>
+                    <p>In this section, you've learned about:</p>
+                    <ul>
+                        <li>Different mechanisms used to operate clutches in motorsport vehicles</li>
+                        <li>The components of a hydraulic clutch system and their functions</li>
+                        <li>The flow of force in a clutch system from pedal to pressure plate</li>
+                        <li>The advantages of hydraulic systems in high-performance applications</li>
+                    </ul>
+                    <p>Continue to the next section to learn about friction clutch designs and operation.</p>
+                </div>
+            `,
+            
+            "clutch-friction-clutches": `
+                <h1>Friction Clutches</h1>
+                
+                <div class="section-objective">
+                    <h3>📋 Your Tasks:</h3>
+                    <ol>
+                        <li>Learn the purpose and function of clutches in motorsport</li>
+                        <li>Understand the different types of friction clutches</li>
+                        <li>Identify key components in the clutch assembly</li>
+                        <li>Complete the clutch type comparison activity</li>
+                    </ol>
+                </div>
+                
+                <h2>Purpose of Clutches</h2>
+                <p>Clutches serve several important functions:</p>
+                <ul>
+                    <li>Smooth engagement of power</li>
+                    <li>Allow gear changes</li>
+                    <li>Prevent stalling when stationary</li>
+                    <li>Protect drivetrain from shock loads</li>
+                </ul>
+                
+                <div class="knowledge-check" data-id="clutch-purpose" data-correct="d">
+                    <div class="knowledge-question">Which of these is NOT a primary function of a clutch?</div>
+                    <div class="knowledge-options">
+                        <div class="knowledge-option" data-option="a">Allow engine to run while vehicle is stationary</div>
+                        <div class="knowledge-option" data-option="b">Enable smooth engagement of power</div>
+                        <div class="knowledge-option" data-option="c">Allow gear changes</div>
+                        <div class="knowledge-option" data-option="d">Increase engine power output</div>
+                    </div>
+                    <div class="knowledge-feedback"></div>
+                </div>
+                
+                <h2>Types of Friction Clutches</h2>
+                <p>Motorsport vehicles use various clutch designs:</p>
+                
+                <div class="activity-container">
+                    <h3>Activity: Clutch Types Explorer</h3>
+                    <p>Explore the different types of clutches used in motorsport applications:</p>
+                    
+                    <div class="tabs-container">
+                        <div class="tabs">
+                            <div class="tab active" data-tab="single-plate">Single Plate</div>
+                            <div class="tab" data-tab="multi-plate">Multi-Plate</div>
+                            <div class="tab" data-tab="diaphragm">Diaphragm Spring</div>
+                            <div class="tab" data-tab="coil-spring">Coil Spring</div>
+                        </div>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="single-plate">
+                                <h4>Single Plate Clutch</h4>
+                                <p>Found in many road-based motorsport vehicles:</p>
+                                <ul>
+                                    <li>One friction disc between pressure plate and flywheel</li>
+                                    <li>Relatively simple design</li>
+                                    <li>Good balance of performance and durability</li>
+                                    <li>Suitable for most club-level motorsport applications</li>
+                                </ul>
+                                <div class="tab-image">
+                                    <img src="/api/placeholder/400/250" alt="Single Plate Clutch Diagram">
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="multi-plate">
+                                <h4>Multi-Plate Clutch</h4>
+                                <p>Common in high-performance applications:</p>
+                                <ul>
+                                    <li>Multiple friction plates increase torque capacity</li>
+                                    <li>Allows smaller diameter for reduced rotational inertia</li>
+                                    <li>Can be oil-bath (wet) or dry designs</li>
+                                    <li>Used in high-level motorsport where maximum performance is required</li>
+                                </ul>
+                                <div class="tab-image">
+                                    <img src="/api/placeholder/400/250" alt="Multi-Plate Clutch Diagram">
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="diaphragm">
+                                <h4>Diaphragm Spring Clutch</h4>
+                                <p>Modern design with several advantages:</p>
+                                <ul>
+                                    <li>More consistent clamping pressure throughout wear range</li>
+                                    <li>Lighter pedal feel</li>
+                                    <li>Fewer components than coil spring designs</li>
+                                    <li>Most common in modern motorsport applications</li>
+                                </ul>
+                                <div class="tab-image">
+                                    <img src="/api/placeholder/400/250" alt="Diaphragm Spring Clutch Diagram">
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="coil-spring">
+                                <h4>Coil Spring Clutch</h4>
+                                <p>Traditional design still used in some applications:</p>
+                                <ul>
+                                    <li>Uses multiple coil springs around the perimeter</li>
+                                    <li>Clamping force decreases as clutch wears</li>
+                                    <li>More adjustable for different applications</li>
+                                    <li>Found in some vintage motorsport vehicles</li>
+                                </ul>
+                                <div class="tab-image">
+                                    <img src="/api/placeholder/400/250" alt="Coil Spring Clutch Diagram">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h2>Clutch Components</h2>
+                
+                <div class="interactive-diagram" data-id="clutch-components">
+                    <div class="diagram-container">
+                        <div class="hotspot" style="top: 30%; left: 20%" data-id="1">1</div>
+                        <div class="tooltip" style="top: 30%; left: 20%">Flywheel: Connected to the engine crankshaft</div>
+                        
+                        <div class="hotspot" style="top: 50%; left: 50%" data-id="2">2</div>
+                        <div class="tooltip" style="top: 50%; left: 50%">Friction Disc: Contains friction material and transmits torque</div>
+                        
+                        <div class="hotspot" style="top: 30%; left: 80%" data-id="3">3</div>
+                        <div class="tooltip" style="top: 30%; left: 80%">Pressure Plate: Applies clamping force to friction disc</div>
+                        
+                        <div class="hotspot" style="top: 70%; left: 35%" data-id="4">4</div>
+                        <div class="tooltip" style="top: 70%; left: 35%">Release Bearing: Actuates the pressure plate</div>
+                        
+                        <img src="/api/placeholder/600/350" alt="Clutch Assembly Components" class="diagram-image">
+                    </div>
+                </div>
+                
+                <div class="activity-container">
+                    <h3>Activity: Clutch Type Comparison</h3>
+                    <p>Match each characteristic to the most appropriate clutch type:</p>
+                    
+                    <div class="drag-drop-activity" data-id="clutch-comparison">
+                        <div class="drag-items">
+                            <div class="drag-item" draggable="true" data-type="single">Simple design</div>
+                            <div class="drag-item" draggable="true" data-type="single">Larger diameter</div>
+                            <div class="drag-item" draggable="true" data-type="multi">Highest torque capacity</div>
+                            <div class="drag-item" draggable="true" data-type="multi">Lower rotational inertia</div>
+                            <div class="drag-item" draggable="true" data-type="diaphragm">Consistent pressure</div>
+                            <div class="drag-item" draggable="true" data-type="coil">Individual spring replacement</div>
+                        </div>
+                        
+                        <div class="drop-targets">
+                            <div>
+                                <div class="drop-target-label">Single Plate</div>
+                                <div class="drop-target" data-accepts="single"></div>
+                            </div>
+                            <div>
+                                <div class="drop-target-label">Multi-Plate</div>
+                                <div class="drop-target" data-accepts="multi"></div>
+                            </div>
+                            <div>
+                                <div class="drop-target-label">Diaphragm Spring</div>
+                                <div class="drop-target" data-accepts="diaphragm"></div>
+                            </div>
+                            <div>
+                                <div class="drop-target-label">Coil Spring</div>
+                                <div class="drop-target" data-accepts="coil"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="knowledge-check" data-id="clutch-material" data-correct="b">
+                    <div class="knowledge-question">Which material is commonly used in high-performance clutch friction surfaces?</div>
+                    <div class="knowledge-options">
+                        <div class="knowledge-option" data-option="a">Asbestos (traditional)</div>
+                        <div class="knowledge-option" data-option="b">Ceramic and carbon compounds</div>
+                        <div class="knowledge-option" data-option="c">Pure carbon fiber</div>
+                        <div class="knowledge-option" data-option="d">Rubber compounds</div>
+                    </div>
+                    <div class="knowledge-feedback"></div>
+                </div>
+                
+                <div class="section-summary">
+                    <h3>Section Summary</h3>
+                    <p>In this section, you've learned about:</p>
+                    <ul>
+                        <li>The purpose and functions of clutches in motorsport vehicles</li>
+                        <li>Different types of clutches including single plate, multi-plate, and various spring designs</li>
+                        <li>Key components in a clutch assembly and their functions</li>
+                        <li>Advantages and applications of different clutch designs in motorsport</li>
+                    </ul>
+                    <p>Continue to the Gearbox section to learn about manual gearbox types and operation.</p>
+                </div>
+            `,
+            
+            "gearbox-types": `
+                <h1>Gearbox Types and Operation</h1>
+                
+                <div class="section-objective">
+                    <h3>📋 Your Tasks:</h3>
+                    <ol>
+                        <li>Learn about the purpose and types of manual gearboxes in motorsport</li>
+                        <li>Understand transverse and inline gearbox layouts</li>
+                        <li>Calculate gear ratios using the interactive calculator</li>
+                        <li>Complete the gearbox identification challenge</li>
+                    </ol>
+                </div>
+                
+                <h2>Purpose of Gearboxes</h2>
+                <p>Gearboxes in motorsport vehicles provide:</p>
+                <ul>
+                    <li>Neutral position for stationary operation</li>
+                    <li>Reverse gear capability</li>
+                    <li>Torque multiplication for acceleration</li>
+                    <li>Optimal engine speed management</li>
+                </ul>
+                
+                <div class="knowledge-check" data-id="gearbox-purpose" data-correct="c">
+                    <div class="knowledge-question">What is the primary purpose of a gearbox in a motorsport vehicle?</div>
+                    <div class="knowledge-options">
+                        <div class="knowledge-option" data-option="a">To reduce engine wear</div>
+                        <div class="knowledge-option" data-option="b">To allow the vehicle to stop</div>
+                        <div class="knowledge-option" data-option="c">To match engine speed to wheel speed for optimal performance</div>
+                        <div class="knowledge-option" data-option="d">To reduce fuel consumption</div>
+                    </div>
+                    <div class="knowledge-feedback"></div>
+                </div>
+                
+                <h2>Gearbox Layouts</h2>
+                
+                <div class="interactive-diagram" data-id="gearbox-layouts">
+                    <div class="diagram-container">
+                        <div class="hotspot" style="top: 30%; left: 25%" data-id="1">1</div>
+                        <div class="tooltip" style="top: 30%; left: 25%">Transverse Layout: Gearbox mounted perpendicular to car's centerline, common in FWD applications</div>
+                        
+                        <div class="hotspot" style="top: 30%; left: 75%" data-id="2">2</div>
+                        <div class="tooltip" style="top: 30%; left: 75%">Inline Layout: Gearbox mounted along car's centerline, common in RWD applications</div>
+                        
+                        <img src="/api/placeholder/600/300" alt="Gearbox Layout Types" class="diagram-image">
+                    </div>
+                </div>
+                
+                <h3>Transverse Layout</h3>
+                <p>Common in front-wheel drive applications:</p>
+                <ul>
+                    <li>Compact design with gearbox and differential as one unit</li>
+                    <li>Input and output shafts parallel to axle line</li>
+                    <li>Space-efficient for transverse engine layouts</li>
+                </ul>
+                
+                <h3>Inline Layout</h3>
+                <p>Traditional layout for rear-wheel drive:</p>
+                <ul>
+                    <li>Gearbox mounted in-line with engine</li>
+                    <li>Power transmitted to rear differential via propshaft</li>
+                    <li>Better weight distribution</li>
+                </ul>
+                
+                <div class="activity-container">
+                    <h3>Activity: Gearbox Identification Challenge</h3>
+                    <p>Identify each gearbox configuration based on its characteristics.</p>
+                    
+                    <div class="drag-drop-activity" data-id="gearbox-identification">
+                        <div class="drag-items">
+                            <div class="drag-item" draggable="true" data-type="transverse">Combined with differential</div>
+                            <div class="drag-item" draggable="true" data-type="transverse">Common in hot hatches</div>
+                            <div class="drag-item" draggable="true" data-type="inline">Uses propshaft</div>
+                            <div class="drag-item" draggable="true" data-type="inline">Common in performance cars</div>
+                            <div class="drag-item" draggable="true" data-type="sequential">No synchromesh</div>
+                            <div class="drag-item" draggable="true" data-type="sequential">Dog engagement</div>
+                        </div>
+                        
+                        <div class="drop-targets">
+                            <div>
+                                <div class="drop-target-label">Transverse Gearbox</div>
+                                <div class="drop-target" data-accepts="transverse"></div>
+                            </div>
+                            <div>
+                                <div class="drop-target-label">Inline Gearbox</div>
+                                <div class="drop-target" data-accepts="inline"></div>
+                            </div>
+                            <div>
+                                <div class="drop-target-label">Sequential Racing Gearbox</div>
+                                <div class="drop-target" data-accepts="sequential"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h2>Speed Configurations</h2>
+                <p>Motorsport gearboxes typically feature:</p>
+                <ul>
+                    <li>4, 5, or 6-speed manual configurations</li>
+                    <li>Sequential options in higher-level motorsport</li>
+                    <li>Dog engagement for faster shifting in racing applications</li>
+                </ul>
+                
+                <div class="activity-container">
+                    <h3>Activity: Gear Ratio Calculator</h3>
+                    <p>Use this interactive calculator to determine overall gear ratios in different situations.</p>
+                    
+                    <div class="calculator-container">
+                        <div class="calculator-inputs">
+                            <div class="input-group">
+                                <label for="engine-rpm">Engine RPM:</label>
+                                <input type="number" id="engine-rpm" value="6000" min="1000" max="12000" step="100">
+                            </div>
+                            <div class="input-group">
+                                <label for="gear-ratio">Gear Ratio:</label>
+                                <select id="gear-ratio">
+                                    <option value="3.5">1st Gear - 3.5:1</option>
+                                    <option value="2.7">2nd Gear - 2.7:1</option>
+                                    <option value="1.8">3rd Gear - 1.8:1</option>
+                                    <option value="1.3">4th Gear - 1.3:1</option>
+                                    <option value="1.0">5th Gear - 1.0:1</option>
+                                    <option value="0.8">6th Gear - 0.8:1</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="final-drive">Final Drive Ratio:</label>
+                                <input type="number" id="final-drive" value="3.90" min="2.0" max="5.0" step="0.1">
+                            </div>
+                            <div class="input-group">
+                                <label for="wheel-size">Wheel Diameter (inches):</label>
+                                <input type="number" id="wheel-size" value="18" min="13" max="22" step="1">
+                            </div>
+                            <button id="calculate-speed" class="btn">Calculate</button>
+                        </div>
+                        <div class="calculator-results">
+                            <div class="result-item">
+                                <span>Overall Ratio:</span>
+                                <span id="overall-ratio">13.65:1</span>
+                            </div>
+                            <div class="result-item">
+                                <span>Output Speed at Wheels:</span>
+                                <span id="output-rpm">440 RPM</span>
+                            </div>
+                            <div class="result-item">
+                                <span>Vehicle Speed:</span>
+                                <span id="vehicle-speed">74 km/h (46 mph)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="knowledge-check" data-id="gear-ratio-calc" data-correct="c">
+                    <div class="knowledge-question">How do you calculate the overall gear ratio?</div>
+                    <div class="knowledge-options">
+                        <div class="knowledge-option" data-option="a">Engine RPM ÷ Wheel RPM</div>
+                        <div class="knowledge-option" data-option="b">Gear Ratio + Final Drive Ratio</div>
+                        <div class="knowledge-option" data-option="c">Gear Ratio × Final Drive Ratio</div>
+                        <div class="knowledge-option" data-option="d">Final Drive Ratio ÷ Gear Ratio</div>
+                    </div>
+                    <div class="knowledge-feedback"></div>
+                </div>
+                
+                <div class="section-summary">
+                    <h3>Section Summary</h3>
+                    <p>In this section, you've learned about:</p>
+                    <ul>
+                        <li>The purpose and function of gearboxes in motorsport vehicles</li>
+                        <li>Different gearbox layouts (transverse and inline) and their applications</li>
+                        <li>How to calculate and interpret gear ratios</li>
+                        <li>Speed configurations used in motorsport applications</li>
+                    </ul>
+                    <p>Continue to the next section to learn about gearbox construction and operation.</p>
+                </div>
+            `,
+            
+            "gearbox-construction": `
+                <h1>Gearbox Construction & Operation</h1>
+                
+                <h2>Synchromesh Operation</h2>
+                <p>Synchromesh systems facilitate smooth gear changes:</p>
+                <ul>
+                    <li>Synchronizer rings equalize speeds between shafts</li>
+                    <li>Prevents gear clash during shifts</li>
+                    <li>Reduces wear and noise</li>
+                </ul>
+                
+                <h2>Key Components</h2>
+                
+                <h3>Gear Selection Mechanism</h3>
+                <ul>
+                    <li>Selector forks move gears on shafts</li>
+                    <li>Selector rods connect to shift lever</li>
+                    <li>Detents prevent accidental gear disengagement</li>
+                </ul>
+                
+                <h3>Interlock Mechanisms</h3>
+                <p>Safety systems that prevent:</p>
+                <ul>
+                    <li>Selection of multiple gears simultaneously</li>
+                    <li>Accidental reverse engagement at speed</li>
+                </ul>
+                
+                <div class="interactive-diagram">
+                    <div class="diagram-container">
+                        <div class="hotspot" style="top: 30%; left: 30%"></div>
+                        <div class="tooltip" style="top: 30%; left: 30%">Synchromesh Ring: Equalizes speeds between shafts</div>
+                        
+                        <div class="hotspot" style="top: 50%; left: 70%"></div>
+                        <div class="tooltip" style="top: 50%; left: 70%">Selector Fork: Moves gears into engagement</div>
+                        
+                        <div class="hotspot" style="top: 70%; left: 40%"></div>
+                        <div class="tooltip" style="top: 70%; left: 40%">Detent Mechanism: Prevents accidental gear disengagement</div>
+                        
+                        <img src="/api/placeholder/600/300" alt="Manual Gearbox Components" class="diagram-image">
+                    </div>
+                </div>
+            `,
+            
+            "gearbox-bearings": `
+                <h1>Gearbox Bearings & Lubrication</h1>
+                
+                <h2>Bearing Arrangements</h2>
+                <p>Gearboxes use various bearing types:</p>
+                <ul>
+                    <li>Bushes - Simple sliding bearings for light loads</li>
+                    <li>Ball bearings - For combined radial and thrust loads</li>
+                    <li>Roller bearings - For heavy radial loads</li>
+                    <li>Taper roller bearings - For combined heavy loads</li>
+                </ul>
+                
+                <h2>Sealing Systems</h2>
+                <p>Preventing oil leaks is critical:</p>
+                <ul>
+                    <li>Oil seals at input and output shafts</li>
+                    <li>Gaskets between housing sections</li>
+                    <li>O-rings for selector shafts</li>
+                </ul>
+                
+                <h2>Lubrication</h2>
+                <p>Proper lubrication is essential for gearbox longevity:</p>
+                <ul>
+                    <li>Oil type must match manufacturer specifications</li>
+                    <li>Oil level must be correctly maintained</li>
+                    <li>Oil serves both lubrication and cooling functions</li>
+                    <li>Synthetic oils often used in performance applications</li>
+                </ul>
+                
+                <h2>Additional Components</h2>
+                <ul>
+                    <li>Speedometer drive - Provides vehicle speed information</li>
+                    <li>Reverse light switch - Activates when reverse is selected</li>
+                    <li>Breathers - Prevent pressure buildup</li>
+                </ul>
+            `,
+            
+            "driveline-components": `
+                <h1>Driveline Components</h1>
+                
+                <div class="section-objective">
+                    <h3>📋 Your Tasks:</h3>
+                    <ol>
+                        <li>Learn about propshafts and drive shafts in different drive systems</li>
+                        <li>Understand the stresses and forces applied to drive components</li>
+                        <li>Identify construction materials and their properties</li>
+                        <li>Complete the interactive driveline components activity</li>
+                    </ol>
+                </div>
+                
+                <h2>Propshafts & Drive Shafts</h2>
+                <p>These components transmit power from gearbox to wheels:</p>
+                <ul>
+                    <li>Propshafts connect gearbox to rear differential</li>
+                    <li>Drive shafts connect differential to wheels</li>
+                    <li>Must accommodate suspension movement</li>
+                    <li>Used in front, rear, and four-wheel drive systems</li>
+                </ul>
+                
+                <div class="interactive-diagram" data-id="driveline-layout">
+                    <div class="diagram-container">
+                        <div class="hotspot" style="top: 40%; left: 20%" data-id="1">1</div>
+                        <div class="tooltip" style="top: 40%; left: 20%">Gearbox Output: Power leaves transmission</div>
+                        
+                        <div class="hotspot" style="top: 40%; left: 50%" data-id="2">2</div>
+                        <div class="tooltip" style="top: 40%; left: 50%">Propshaft: Connects gearbox to differential</div>
+                        
+                        <div class="hotspot" style="top: 40%; left: 80%" data-id="3">3</div>
+                        <div class="tooltip" style="top: 40%; left: 80%">Differential: Splits torque between wheels</div>
+                        
+                        <div class="hotspot" style="top: 70%; left: 65%" data-id="4">4</div>
+                        <div class="tooltip" style="top: 70%; left: 65%">Drive Shaft: Connects differential to wheel</div>
+                        
+                        <img src="/api/placeholder/600/350" alt="RWD Driveline Layout" class="diagram-image">
+                    </div>
+                </div>
+                
+                <h2>Stresses in Drive Shafts</h2>
+                <p>Drive shafts experience three primary stresses:</p>
+                <ul>
+                    <li>Torsional - Twisting forces during acceleration/deceleration</li>
+                    <li>Bending - Forces from suspension movement</li>
+                    <li>Shear - Forces when changing direction of power flow</li>
+                </ul>
+                
+                <div class="knowledge-check" data-id="shaft-stress" data-correct="a">
+                    <div class="knowledge-question">Which type of stress is most critical when designing a propshaft for a high-power motorsport application?</div>
+                    <div class="knowledge-options">
+                        <div class="knowledge-option" data-option="a">Torsional stress</div>
+                        <div class="knowledge-option" data-option="b">Bending stress</div>
+                        <div class="knowledge-option" data-option="c">Shear stress</div>
+                        <div class="knowledge-option" data-option="d">Compressive stress</div>
+                    </div>
+                    <div class="knowledge-feedback"></div>
+                </div>
+                
+                <h2>Construction Materials</h2>
+                <p>Various materials are used based on application:</p>
+                <ul>
+                    <li>Steel - Most common, good strength-to-weight ratio</li>
+                    <li>Aluminum - Lighter weight but less torsional strength</li>
+                    <li>Carbon fiber - Used in high-performance applications</li>
+                </ul>
+                
+                <div class="activity-container">
+                    <h3>Activity: Driveline Material Selection</h3>
+                    <p>Match each material to its most appropriate application in motorsport drivelines:</p>
+                    
+                    <div class="drag-drop-activity" data-id="driveline-materials">
+                        <div class="drag-items">
+                            <div class="drag-item" draggable="true" data-type="steel">High torque resistance</div>
+                            <div class="drag-item" draggable="true" data-type="steel">Cost-effective solution</div>
+                            <div class="drag-item" draggable="true" data-type="aluminum">Weight reduction priority</div>
+                            <div class="drag-item" draggable="true" data-type="carbon">Maximum performance</div>
+                            <div class="drag-item" draggable="true" data-type="carbon">Highest strength-to-weight</div>
+                            <div class="drag-item" draggable="true" data-type="aluminum">Moderate performance gain</div>
+                        </div>
+                        
+                        <div class="drop-targets">
+                            <div>
+                                <div class="drop-target-label">Steel Applications</div>
+                                <div class="drop-target" data-accepts="steel"></div>
+                            </div>
+                            <div>
+                                <div class="drop-target-label">Aluminum Applications</div>
+                                <div class="drop-target" data-accepts="aluminum"></div>
+                            </div>
+                            <div>
+                                <div class="drop-target-label">Carbon Fiber Applications</div>
+                                <div class="drop-target" data-accepts="carbon"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h2>Wheel Bearing Arrangements</h2>
+                <p>Different drive systems use various wheel bearing configurations:</p>
+                
+                <div class="activity-container">
+                    <h3>Activity: Wheel Bearing Types</h3>
+                    <p>Explore the different wheel bearing arrangements used in motorsport vehicles:</p>
+                    
+                    <div class="tabs-container">
+                        <div class="tabs">
+                            <div class="tab active" data-tab="driven-wheels">Driven Wheels</div>
+                            <div class="tab" data-tab="fully-floating">Fully Floating</div>
+                            <div class="tab" data-tab="three-quarter">Three Quarter</div>
+                            <div class="tab" data-tab="semi-floating">Semi Floating</div>
+                        </div>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="driven-wheels">
+                                <h4>Driven Wheels</h4>
+                                <p>Wheels that receive power from the engine:</p>
+                                <ul>
+                                    <li>Require both rotational support and power transmission</li>
+                                    <li>Must handle both driving and cornering forces</li>
+                                    <li>Usually incorporate a hub with studs for wheel mounting</li>
+                                </ul>
+                                <div class="tab-image">
+                                    <img src="/api/placeholder/400/250" alt="Driven Wheel Diagram">
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="fully-floating">
+                                <h4>Fully Floating Axle</h4>
+                                <p>Used in heavy-duty and many race applications:</p>
+                                <ul>
+                                    <li>Axle shaft only transmits driving torque</li>
+                                    <li>Bearing takes all weight and cornering loads</li>
+                                    <li>Wheel can remain supported even if axle breaks</li>
+                                    <li>Most robust design for motorsport applications</li>
+                                </ul>
+                                <div class="tab-image">
+                                    <img src="/api/placeholder/400/250" alt="Fully Floating Axle Diagram">
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="three-quarter">
+                                <h4>Three Quarter Floating Axle</h4>
+                                <p>Intermediate design:</p>
+                                <ul>
+                                    <li>Axle shaft transmits driving torque</li>
+                                    <li>Axle supports some lateral cornering forces</li>
+                                    <li>Weight is supported by the bearing</li>
+                                    <li>Used in some performance applications</li>
+                                </ul>
+                                <div class="tab-image">
+                                    <img src="/api/placeholder/400/250" alt="Three Quarter Floating Axle Diagram">
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="semi-floating">
+                                <h4>Semi Floating Axle</h4>
+                                <p>Common in passenger vehicles:</p>
+                                <ul>
+                                    <li>Axle shaft transmits driving torque</li>
+                                    <li>Axle also supports vehicle weight</li>
+                                    <li>Axle handles all lateral cornering forces</li>
+                                    <li>Simplest and lightest design but less robust</li>
+                                </ul>
+                                <div class="tab-image">
+                                    <img src="/api/placeholder/400/250" alt="Semi Floating Axle Diagram">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="knowledge-check" data-id="bearing-types" data-correct="a">
+                    <div class="knowledge-question">Which axle type is most suitable for high-performance motorsport where reliability is critical?</div>
+                    <div class="knowledge-options">
+                        <div class="knowledge-option" data-option="a">Fully floating axle</div>
+                        <div class="knowledge-option" data-option="b">Three quarter floating axle</div>
+                        <div class="knowledge-option" data-option="c">Semi floating axle</div>
+                        <div class="knowledge-option" data-option="d">Non-floating axle</div>
+                    </div>
+                    <div class="knowledge-feedback"></div>
+                </div>
+                
+                <div class="section-summary">
+                    <h3>Section Summary</h3>
+                    <p>In this section, you've learned about:</p>
+                    <ul>
+                        <li>The purpose and layout of propshafts and drive shafts</li>
+                        <li>The different types of stresses experienced by driveline components</li>
+                        <li>Material selection based on application requirements</li>
+                        <li>Different wheel bearing arrangements and their applications</li>
+                    </ul>
+                    <p>Continue to the next section to learn about universal and CV joints in driveline systems.</p>
+                </div>
+            `,
+            
+            "driveline-joints": `
+                <h1>Universal & CV Joints</h1>
+                
+                <h2>Universal Joints</h2>
+                <p>Also known as Cardan or Hooke's joints:</p>
+                <ul>
+                    <li>Allow transmission of power between non-aligned shafts</li>
+                    <li>Speed fluctuates during rotation when operating at an angle</li>
+                    <li>Typically used in pairs to cancel out speed variations</li>
+                </ul>
+                
+                <h2>Constant Velocity Joints</h2>
+                <p>Superior to universal joints for front-wheel drive applications:</p>
+                <ul>
+                    <li>Maintain constant velocity throughout rotation</li>
+                    <li>Essential for drive shafts that incorporate steering</li>
+                    <li>Reduce vibration and improve power delivery</li>
+                </ul>
+                
+                <h2>Types of CV Joints</h2>
+                <ul>
+                    <li>Rzeppa - Ball-type CV joint common in front axles</li>
+                    <li>Tripod - More compact design with three rollers</li>
+                    <li>Double-Cardan - Two universal joints with center yoke</li>
+                </ul>
+                
+                <h2>Protective Boots</h2>
+                <p>Rubber or synthetic boots are critical:</p>
+                <ul>
+                    <li>Retain grease within the joint</li>
+                    <li>Prevent contamination from water and debris</li>
+                    <li>Boot failure is the most common cause of joint damage</li>
+                </ul>
+                
+                <div class="interactive-diagram">
+                    <div class="diagram-container">
+                        <div class="hotspot" style="top: 40%; left: 30%"></div>
+                        <div class="tooltip" style="top: 40%; left: 30%">Universal Joint: Allows angle between shafts but creates speed fluctuations</div>
+                        
+                        <div class="hotspot" style="top: 40%; left: 70%"></div>
+                        <div class="tooltip" style="top: 40%; left: 70%">CV Joint: Maintains constant velocity throughout rotation</div>
+                        
+                        <img src="/api/placeholder/600/300" alt="Joint Types Comparison" class="diagram-image">
+                    </div>
+                </div>
+            `,
+            
+            "driveline-differential": `
+                <h1>Differential & Final Drive</h1>
+                
+                <div class="section-objective">
+                    <h3>📋 Your Tasks:</h3>
+                    <ol>
+                        <li>Learn about the purpose and types of differentials in motorsport</li>
+                        <li>Understand the construction of final drive components</li>
+                        <li>Calculate gear ratios using the interactive tool</li>
+                        <li>Complete the differential operation simulation activity</li>
+                    </ol>
+                </div>
+                
+                <h2>Purpose of Differentials</h2>
+                <p>Differentials serve multiple functions:</p>
+                <ul>
+                    <li>Allow wheels to rotate at different speeds during cornering</li>
+                    <li>Transmit power to both wheels</li>
+                    <li>Provide final drive reduction</li>
+                </ul>
+                
+                <div class="interactive-diagram" data-id="differential-operation">
+                    <div class="diagram-container">
+                        <div class="hotspot" style="top: 35%; left: 35%" data-id="1">1</div>
+                        <div class="tooltip" style="top: 35%; left: 35%">Crown Wheel: Large gear driven by pinion, provides speed reduction</div>
+                        
+                        <div class="hotspot" style="top: 35%; left: 65%" data-id="2">2</div>
+                        <div class="tooltip" style="top: 35%; left: 65%">Pinion Gear: Connects to driveshaft, drives the crown wheel</div>
+                        
+                        <div class="hotspot" style="top: 60%; left: 50%" data-id="3">3</div>
+                        <div class="tooltip" style="top: 60%; left: 50%">Differential Cage: Houses the sun and planet gears</div>
+                        
+                        <div class="hotspot" style="top: 70%; left: 30%" data-id="4">4</div>
+                        <div class="tooltip" style="top: 70%; left: 30%">Sun Gear: Connected to axle shaft, allows different wheel speeds</div>
+                        
+                        <img src="/api/placeholder/600/400" alt="Differential Components" class="diagram-image">
+                    </div>
+                </div>
+                
+                <h2>Types of Differentials</h2>
+                
+                <h3>Open Differential</h3>
+                <ul>
+                    <li>Basic design found in many road cars</li>
+                    <li>Divides torque equally between wheels</li>
+                    <li>Limited traction in motorsport applications</li>
+                </ul>
+                
+                <h3>Limited Slip Differential (LSD)</h3>
+                <ul>
+                    <li>Improves traction by limiting speed difference between wheels</li>
+                    <li>Can be mechanical, viscous, or electronic</li>
+                    <li>Essential for high-performance applications</li>
+                </ul>
+                
+                <div class="activity-container">
+                    <h3>Activity: Differential Operation Simulation</h3>
+                    <p>Match each differential behavior to the correct racing scenario:</p>
+                    
+                    <div class="drag-drop-activity" data-id="differential-scenarios">
+                        <div class="drag-items">
+                            <div class="drag-item" draggable="true" data-type="open">Equal torque distribution regardless of traction</div>
+                            <div class="drag-item" draggable="true" data-type="open">One wheel spins if traction is lost</div>
+                            <div class="drag-item" draggable="true" data-type="lsd">Helps maintain power delivery during cornering</div>
+                            <div class="drag-item" draggable="true" data-type="lsd">Improved launch traction on split surfaces</div>
+                        </div>
+                        
+                        <div class="drop-targets">
+                            <div>
+                                <div class="drop-target-label">Open Differential Behavior</div>
+                                <div class="drop-target" data-accepts="open"></div>
+                            </div>
+                            <div>
+                                <div class="drop-target-label">Limited Slip Differential Behavior</div>
+                                <div class="drop-target" data-accepts="lsd"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="knowledge-check" data-id="diff-types" data-correct="c">
+                    <div class="knowledge-question">Which type of differential is most commonly used in high-performance motorsport applications?</div>
+                    <div class="knowledge-options">
+                        <div class="knowledge-option" data-option="a">Open differential</div>
+                        <div class="knowledge-option" data-option="b">Torsen differential</div>
+                        <div class="knowledge-option" data-option="c">Plate-type limited slip differential</div>
+                        <div class="knowledge-option" data-option="d">Viscous coupling</div>
+                    </div>
+                    <div class="knowledge-feedback"></div>
+                </div>
+                
+                <h2>Final Drive Components</h2>
+                <ul>
+                    <li>Crown wheel and pinion - Convert power through 90°</li>
+                    <li>Hypoid gear set - Common design with offset pinion</li>
+                    <li>Bevel gears - Used in differential internal mechanism</li>
+                </ul>
+                
+                <h2>Calculating Gear Ratios</h2>
+                <p>Important for performance tuning:</p>
+                <ul>
+                    <li>Final drive ratio = Crown wheel teeth ÷ Pinion teeth</li>
+                    <li>Overall gear ratio = Gearbox ratio × Final drive ratio</li>
+                    <li>Affects acceleration and top speed characteristics</li>
+                </ul>
+                
+                <div class="activity-container">
+                    <h3>Activity: Final Drive Ratio Calculator</h3>
+                    <p>Calculate the final drive ratio from the number of teeth:</p>
+                    
+                    <div class="calculator-container">
+                        <div class="calculator-inputs">
+                            <div class="input-group">
+                                <label for="crown-teeth">Crown Wheel Teeth:</label>
+                                <input type="number" id="crown-teeth" value="39" min="30" max="50">
+                            </div>
+                            <div class="input-group">
+                                <label for="pinion-teeth">Pinion Teeth:</label>
+                                <input type="number" id="pinion-teeth" value="10" min="8" max="15">
+                            </div>
+                            <button id="calculate-fd-ratio" class="btn">Calculate Ratio</button>
+                        </div>
+                        <div class="calculator-results">
+                            <div class="result-item">
+                                <span>Final Drive Ratio:</span>
+                                <span id="fd-ratio-result">3.90:1</span>
+                            </div>
+                            <div class="result-item">
+                                <span>Effect on Vehicle:</span>
+                                <span id="fd-effect">Good balance of acceleration and top speed</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="knowledge-check" data-id="fd-ratio-effect" data-correct="a">
+                    <div class="knowledge-question">How does a higher final drive ratio (e.g., 4.10:1 vs 3.42:1) affect vehicle performance?</div>
+                    <div class="knowledge-options">
+                        <div class="knowledge-option" data-option="a">Improved acceleration but lower top speed</div>
+                        <div class="knowledge-option" data-option="b">Higher top speed but reduced acceleration</div>
+                        <div class="knowledge-option" data-option="c">No effect on performance, only on fuel economy</div>
+                        <div class="knowledge-option" data-option="d">Reduced wheel torque in all gears</div>
+                    </div>
+                    <div class="knowledge-feedback"></div>
+                </div>
+                
+                <div class="section-summary">
+                    <h3>Section Summary</h3>
+                    <p>In this section, you've learned about:</p>
+                    <ul>
+                        <li>The purpose and types of differentials in motorsport vehicles</li>
+                        <li>How limited slip differentials improve traction and performance</li>
+                        <li>Final drive components and their functions</li>
+                        <li>How to calculate gear ratios and understand their effects on vehicle performance</li>
+                    </ul>
+                </div>
+            `,
+            
+            quiz: `
+                <div class="quiz-container">
+                    <h1>Test Your Knowledge</h1>
+                    <p>Put your motorsport maintenance knowledge to the test with this quick quiz.</p>
+                    <p>Complete the quiz to earn points and unlock the Quiz Champion achievement!</p>
+                    
+                    <div class="knowledge-check" data-id="pre-quiz" data-correct="c">
+                        <div class="knowledge-question">Which of these is NOT a primary component in a manual transmission system?</div>
+                        <div class="knowledge-options">
+                            <div class="knowledge-option" data-option="a">Clutch</div>
+                            <div class="knowledge-option" data-option="b">Gearbox</div>
+                            <div class="knowledge-option" data-option="c">Torque converter</div>
+                            <div class="knowledge-option" data-option="d">Differential</div>
+                        </div>
+                        <div class="knowledge-feedback"></div>
+                    </div>
+                    
+                    <button id="start-quiz" class="btn btn-large" style="margin-top: 2rem;">Start Full Quiz</button>
+                </div>
+            `
+        };
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load saved data if available
+            loadSavedData();
+            
+            // Set up event listeners for main navigation
+            const navButtons = document.querySelectorAll('#main-nav .nav-btn');
+            navButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const sectionId = this.dataset.section;
+                    navigateTo(sectionId);
+                    
+                    // Close menu on mobile after selection
+                    if (window.innerWidth <= 768) {
+                        document.getElementById('main-nav').classList.remove('expanded');
+                    }
+                });
+            });
+            
+            // Set up mobile menu toggle
+            const menuToggle = document.getElementById('menu-toggle');
+            menuToggle.addEventListener('click', function() {
+                document.getElementById('main-nav').classList.toggle('expanded');
+            });
+            
+            // Load home content initially
+            loadContent('home');
+            
+            // Handle resize events
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768) {
+                    document.getElementById('main-nav').classList.remove('expanded');
+                }
+            });
+        });
+
+        // Navigation function
+        function navigateTo(sectionId, subsectionId = null) {
+            // Update active section
+            app.activeSection = sectionId;
+            app.activeSubsection = subsectionId;
+            
+            // Update active button in main nav
+            document.querySelectorAll('#main-nav .nav-btn').forEach(button => {
+                if (button.dataset.section === sectionId) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+            
+            // Generate subsection navigation if needed
+            const subsectionContainer = document.getElementById('subsection-container');
+            if (sections[sectionId].subsections.length > 0) {
+                let subsectionHTML = '';
+                sections[sectionId].subsections.forEach(subsection => {
+                    const isActive = subsection.id === app.activeSubsection ? 'active' : '';
+                    subsectionHTML += `<button class="subsection-btn ${isActive}" data-subsection="${subsection.id}">${subsection.title}</button>`;
+                });
+                subsectionContainer.innerHTML = subsectionHTML;
+                
+                // Add event listeners to subsection buttons
+                document.querySelectorAll('.subsection-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const subsectionId = this.dataset.subsection;
+                        loadSubsection(sectionId, subsectionId);
+                        
+                        // Update active button
+                        document.querySelectorAll('.subsection-btn').forEach(btn => {
+                            btn.classList.remove('active');
+                        });
+                        this.classList.add('active');
+                    });
+                });
+                
+                // Load first subsection if none selected
+                if (!app.activeSubsection) {
+                    app.activeSubsection = sections[sectionId].subsections[0].id;
+                }
+                
+                // Load content
+                loadSubsection(sectionId, app.activeSubsection);
+            } else {
+                // No subsections, clear subsection nav
+                subsectionContainer.innerHTML = '';
+                
+                // Load main section content
+                loadContent(sectionId);
+            }
+        }
+
+        // Load content for a section
+        function loadContent(sectionId) {
+            const contentContainer = document.getElementById('content-container');
+            
+            // Reset quiz state if navigating away
+            if (sectionId !== 'quiz') {
+                app.quizActive = false;
+                app.quizCompleted = false;
+            }
+            
+            // Set content
+            contentContainer.innerHTML = content[sectionId];
+            
+            // If quiz section, add event listener to start button
+            if (sectionId === 'quiz') {
+                const startButton = document.getElementById('start-quiz');
+                if (startButton) {
+                    startButton.addEventListener('click', startQuiz);
+                }
+            }
+            
+            // Add listeners for any interactive elements
+            initializeInteractiveElements();
+        }
+
+        // Load content for a subsection
+        function loadSubsection(sectionId, subsectionId) {
+            app.activeSubsection = subsectionId;
+            const contentKey = `${sectionId}-${subsectionId}`;
+            const contentContainer = document.getElementById('content-container');
+            contentContainer.innerHTML = content[contentKey];
+            
+            // Add listeners for any interactive elements
+            initializeInteractiveElements();
+        }
+
+        // Initialize quiz
+        function startQuiz() {
+            app.quizActive = true;
+            app.quizCompleted = false;
+            app.currentQuestionIndex = 0;
+            app.quizScore = 0;
+            app.selectedAnswers = {};
+            
+            renderQuizQuestion();
+        }
+
+        // Render current quiz question
+        function renderQuizQuestion() {
+            const contentContainer = document.getElementById('content-container');
+            const currentQuestion = quizQuestions[app.currentQuestionIndex];
+            
+            let optionsHTML = '';
+            currentQuestion.options.forEach((option, index) => {
+                const isSelected = app.selectedAnswers[app.currentQuestionIndex] === index;
+                optionsHTML += `
+                    <div class="quiz-option ${isSelected ? 'selected' : ''}" data-index="${index}">
+                        ${option}
+                    </div>
+                `;
+            });
+            
+            contentContainer.innerHTML = `
+                <div class="quiz-container">
+                    <h1>Quiz Question ${app.currentQuestionIndex + 1} of ${quizQuestions.length}</h1>
+                    <div class="quiz-question">${currentQuestion.question}</div>
+                    <div class="quiz-options">
+                        ${optionsHTML}
+                    </div>
+                    <div class="quiz-navigation">
+                        <button class="btn" id="quiz-previous" ${app.currentQuestionIndex === 0 ? 'disabled' : ''}>Previous</button>
+                        <button class="btn" id="quiz-next" disabled>Next</button>
+                    </div>
+                </div>
+            `;
+            
+            // Add event listeners to options
+            document.querySelectorAll('.quiz-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const optionIndex = parseInt(this.dataset.index);
+                    selectAnswer(optionIndex);
+                });
+            });
+            
+            // Add event listeners to navigation buttons
+            const prevButton = document.getElementById('quiz-previous');
+            const nextButton = document.getElementById('quiz-next');
+            
+            if (prevButton) {
+                prevButton.addEventListener('click', previousQuestion);
+            }
+            
+            if (nextButton) {
+                nextButton.addEventListener('click', nextQuestion);
+            }
+            
+            // Enable next button if answer already selected
+            if (app.selectedAnswers[app.currentQuestionIndex] !== undefined) {
+                nextButton.disabled = false;
+            }
+        }
+
+        // Handle answer selection
+        function selectAnswer(optionIndex) {
+            app.selectedAnswers[app.currentQuestionIndex] = optionIndex;
+            
+            // Update UI to show selected option
+            document.querySelectorAll('.quiz-option').forEach((option, index) => {
+                if (index === optionIndex) {
+                    option.classList.add('selected');
+                } else {
+                    option.classList.remove('selected');
+                }
+            });
+            
+            // Enable next button
+            const nextButton = document.getElementById('quiz-next');
+            if (nextButton) {
+                nextButton.disabled = false;
+            }
+        }
+
+        // Navigate to previous question
+        function previousQuestion() {
+            if (app.currentQuestionIndex > 0) {
+                app.currentQuestionIndex--;
+                renderQuizQuestion();
+            }
+        }
+
+        // Navigate to next question
+        function nextQuestion() {
+            // Check if this is the last question
+            if (app.currentQuestionIndex < quizQuestions.length - 1) {
+                app.currentQuestionIndex++;
+                renderQuizQuestion();
+            } else {
+                // Complete the quiz
+                completeQuiz();
+            }
+        }
+
+        // Complete the quiz and show results
+        function completeQuiz() {
+            app.quizCompleted = true;
+            
+            // Calculate score
+            app.quizScore = 0;
+            for (let i = 0; i < quizQuestions.length; i++) {
+                if (app.selectedAnswers[i] === quizQuestions[i].correctAnswer) {
+                    app.quizScore++;
+                }
+            }
+            
+            // Update quiz progress based on score
+            const scorePercentage = Math.floor((app.quizScore / quizQuestions.length) * 100);
+            updateSectionProgress('quiz', scorePercentage);
+            
+            // Award points based on score
+            const pointsEarned = app.quizScore * 10;
+            if (pointsEarned > 0) {
+                awardPoints(pointsEarned, `Quiz score: ${app.quizScore}/${quizQuestions.length}`);
+            }
+            
+            // Display results
+            const contentContainer = document.getElementById('content-container');
+            contentContainer.innerHTML = `
+                <div class="quiz-container">
+                    <h1>Quiz Results</h1>
+                    <div class="quiz-results">
+                        <p>You scored:</p>
+                        <div class="score-display">${app.quizScore} / ${quizQuestions.length}</div>
+                        <p>${getScoreFeedback(app.quizScore, quizQuestions.length)}</p>
+                    </div>
+                    <div class="quiz-navigation">
+                        <button class="btn btn-large" id="restart-quiz">Restart Quiz</button>
+                        <button class="btn btn-large" id="return-home">Return to Home</button>
+                    </div>
+                </div>
+            `;
+            
+            // Add event listeners
+            document.getElementById('restart-quiz').addEventListener('click', startQuiz);
+            document.getElementById('return-home').addEventListener('click', function() {
+                navigateTo('home');
+            });
+        }
+
+        // Get feedback based on score
+        function getScoreFeedback(score, total) {
+            const percentage = (score / total) * 100;
+            
+            if (percentage >= 80) {
+                return "Excellent! You have a strong understanding of motorsport transmission systems.";
+            } else if (percentage >= 60) {
+                return "Good job! You have a solid grasp of the basics, but there's still more to learn.";
+            } else if (percentage >= 40) {
+                return "You're on the right track. Review the material and try again to improve your score.";
+            } else {
+                return "Keep studying! We recommend revisiting the learning materials to strengthen your knowledge.";
+            }
+        }
+
+        // Initialize interactive elements such as hotspots
+        function initializeInteractiveElements() {
+            // Add any special interactive element initialization here
+            // For example, animation triggers, diagram interactions, etc.
+        }
+    </script>
+</body>
+</html>
