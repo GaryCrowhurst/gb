@@ -343,20 +343,22 @@
             border: 2px solid var(--accent);
             border-radius: 8px;
             overflow: hidden;
+            background: #f5f5f5;
+            min-height: 300px;
+            position: relative;
         }
-        
+
         .diagram-container {
             position: relative;
-            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            padding: 1.5rem;
+            min-height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(45deg, #f0f0f0 25%, #e5e5e5 25%, #e5e5e5 50%, #f0f0f0 50%, #f0f0f0 75%, #e5e5e5 75%, #e5e5e5);
+            background-size: 20px 20px;
         }
-        
-        .diagram-image {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-        
+
         .hotspot {
             position: absolute;
             width: 30px;
@@ -1399,8 +1401,6 @@
                         
                         <div class="hotspot" style="top: 70%; left: 40%" data-id="3">3</div>
                         <div class="tooltip" style="top: 70%; left: 40%">Safety Boots: Protect feet from heavy components</div>
-                        
-                        <img src="/api/placeholder/600/400" alt="PPE for Transmission Work" class="diagram-image">
                     </div>
                 </div>
                 
@@ -1571,21 +1571,6 @@
                     <li>Unusual noises during operation</li>
                 </ul>
                 
-                <div class="interactive-diagram" data-id="gearbox-inspection">
-                    <div class="diagram-container">
-                        <div class="hotspot" style="top: 25%; left: 30%" data-id="1">1</div>
-                        <div class="tooltip" style="top: 25%; left: 30%">Input Shaft Seal: Check for oil leaks around the bellhousing</div>
-                        
-                        <div class="hotspot" style="top: 40%; left: 70%" data-id="2">2</div>
-                        <div class="tooltip" style="top: 40%; left: 70%">Selector Fork: Verify smooth movement and no excessive wear</div>
-                        
-                        <div class="hotspot" style="top: 70%; left: 50%" data-id="3">3</div>
-                        <div class="tooltip" style="top: 70%; left: 50%">Output Shaft Bearing: Listen for unusual noises during operation</div>
-                        
-                        <img src="/api/placeholder/600/350" alt="Gearbox Inspection Points" class="diagram-image">
-                    </div>
-                </div>
-                
                 <div class="knowledge-check" data-id="gearbox-noise" data-correct="c">
                     <div class="knowledge-question">During gearbox inspection, a whining noise that increases with speed most likely indicates:</div>
                     <div class="knowledge-options">
@@ -1713,27 +1698,6 @@
                     <li>Clunking during direction changes</li>
                 </ul>
                 
-                <div class="interactive-diagram" data-id="driveline-faults">
-                    <div class="diagram-container">
-                        <div class="hotspot" style="top: 25%; left: 30%" data-id="1">1</div>
-                        <div class="tooltip" style="top: 25%; left: 30%">Universal Joint: Clunking noise during acceleration/deceleration indicates wear</div>
-                        
-                        <div class="hotspot" style="top: 55%; left: 70%" data-id="2">2</div>
-                        <div class="tooltip" style="top: 55%; left: 70%">CV Joint: Clicking noise when turning indicates internal damage</div>
-                        
-                        <div class="hotspot" style="top: 75%; left: 40%" data-id="3">3</div>
-                        <div class="tooltip" style="top: 75%; left: 40%">Propshaft: Vibration that changes with speed indicates balance issue</div>
-                        
-                        <img src="/api/placeholder/600/350" alt="Driveline Fault Locations" class="diagram-image">
-                    </div>
-                </div>
-                
-                <h3>Universal/CV Joint Issues</h3>
-                <ul>
-                    <li>Misalignment symptoms</li>
-                    <li>Accelerated wear patterns</li>
-                </ul>
-                
                 <div class="activity-container">
                     <h3>Activity: Fault Diagnosis Challenge</h3>
                     <p>You're a motorsport technician diagnosing a race car. Based on the symptoms, identify the most likely issue.</p>
@@ -1834,8 +1798,6 @@
                         
                         <div class="hotspot" style="top: 70%; left: 50%" data-id="3">3</div>
                         <div class="tooltip" style="top: 70%; left: 50%">Hydraulic Line: Transfers pressure between cylinders</div>
-                        
-                        <img src="/api/placeholder/600/300" alt="Hydraulic Clutch System Diagram" class="diagram-image">
                     </div>
                 </div>
                 
@@ -1958,9 +1920,6 @@
                                     <li>Good balance of performance and durability</li>
                                     <li>Suitable for most club-level motorsport applications</li>
                                 </ul>
-                                <div class="tab-image">
-                                    <img src="/api/placeholder/400/250" alt="Single Plate Clutch Diagram">
-                                </div>
                             </div>
                             <div class="tab-pane" id="multi-plate">
                                 <h4>Multi-Plate Clutch</h4>
@@ -1971,9 +1930,6 @@
                                     <li>Can be oil-bath (wet) or dry designs</li>
                                     <li>Used in high-level motorsport where maximum performance is required</li>
                                 </ul>
-                                <div class="tab-image">
-                                    <img src="/api/placeholder/400/250" alt="Multi-Plate Clutch Diagram">
-                                </div>
                             </div>
                             <div class="tab-pane" id="diaphragm">
                                 <h4>Diaphragm Spring Clutch</h4>
@@ -1984,9 +1940,6 @@
                                     <li>Fewer components than coil spring designs</li>
                                     <li>Most common in modern motorsport applications</li>
                                 </ul>
-                                <div class="tab-image">
-                                    <img src="/api/placeholder/400/250" alt="Diaphragm Spring Clutch Diagram">
-                                </div>
                             </div>
                             <div class="tab-pane" id="coil-spring">
                                 <h4>Coil Spring Clutch</h4>
@@ -1997,9 +1950,6 @@
                                     <li>More adjustable for different applications</li>
                                     <li>Found in some vintage motorsport vehicles</li>
                                 </ul>
-                                <div class="tab-image">
-                                    <img src="/api/placeholder/400/250" alt="Coil Spring Clutch Diagram">
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -2020,8 +1970,6 @@
                         
                         <div class="hotspot" style="top: 70%; left: 35%" data-id="4">4</div>
                         <div class="tooltip" style="top: 70%; left: 35%">Release Bearing: Actuates the pressure plate</div>
-                        
-                        <img src="/api/placeholder/600/350" alt="Clutch Assembly Components" class="diagram-image">
                     </div>
                 </div>
                 
@@ -2035,7 +1983,7 @@
                             <div class="drag-item" draggable="true" data-type="single">Larger diameter</div>
                             <div class="drag-item" draggable="true" data-type="multi">Highest torque capacity</div>
                             <div class="drag-item" draggable="true" data-type="multi">Lower rotational inertia</div>
-                            <div class="drag-item" draggable="true" data-type="diaphragm">Consistent pressure</div>
+                            <div class="drag-item" draggable="true" data-type="diaphragm">Consistentclamping pressure</div>
                             <div class="drag-item" draggable="true" data-type="coil">Individual spring replacement</div>
                         </div>
                         
@@ -2126,8 +2074,6 @@
                         
                         <div class="hotspot" style="top: 30%; left: 75%" data-id="2">2</div>
                         <div class="tooltip" style="top: 30%; left: 75%">Inline Layout: Gearbox mounted along car's centerline, common in RWD applications</div>
-                        
-                        <img src="/api/placeholder/600/300" alt="Gearbox Layout Types" class="diagram-image">
                     </div>
                 </div>
                 
@@ -2284,21 +2230,6 @@
                     <li>Selection of multiple gears simultaneously</li>
                     <li>Accidental reverse engagement at speed</li>
                 </ul>
-                
-                <div class="interactive-diagram">
-                    <div class="diagram-container">
-                        <div class="hotspot" style="top: 30%; left: 30%"></div>
-                        <div class="tooltip" style="top: 30%; left: 30%">Synchromesh Ring: Equalizes speeds between shafts</div>
-                        
-                        <div class="hotspot" style="top: 50%; left: 70%"></div>
-                        <div class="tooltip" style="top: 50%; left: 70%">Selector Fork: Moves gears into engagement</div>
-                        
-                        <div class="hotspot" style="top: 70%; left: 40%"></div>
-                        <div class="tooltip" style="top: 70%; left: 40%">Detent Mechanism: Prevents accidental gear disengagement</div>
-                        
-                        <img src="/api/placeholder/600/300" alt="Manual Gearbox Components" class="diagram-image">
-                    </div>
-                </div>
             `,
             
             "gearbox-bearings": `
@@ -2373,8 +2304,6 @@
                         
                         <div class="hotspot" style="top: 70%; left: 65%" data-id="4">4</div>
                         <div class="tooltip" style="top: 70%; left: 65%">Drive Shaft: Connects differential to wheel</div>
-                        
-                        <img src="/api/placeholder/600/350" alt="RWD Driveline Layout" class="diagram-image">
                     </div>
                 </div>
                 
@@ -2459,9 +2388,6 @@
                                     <li>Must handle both driving and cornering forces</li>
                                     <li>Usually incorporate a hub with studs for wheel mounting</li>
                                 </ul>
-                                <div class="tab-image">
-                                    <img src="/api/placeholder/400/250" alt="Driven Wheel Diagram">
-                                </div>
                             </div>
                             <div class="tab-pane" id="fully-floating">
                                 <h4>Fully Floating Axle</h4>
@@ -2472,9 +2398,6 @@
                                     <li>Wheel can remain supported even if axle breaks</li>
                                     <li>Most robust design for motorsport applications</li>
                                 </ul>
-                                <div class="tab-image">
-                                    <img src="/api/placeholder/400/250" alt="Fully Floating Axle Diagram">
-                                </div>
                             </div>
                             <div class="tab-pane" id="three-quarter">
                                 <h4>Three Quarter Floating Axle</h4>
@@ -2485,9 +2408,6 @@
                                     <li>Weight is supported by the bearing</li>
                                     <li>Used in some performance applications</li>
                                 </ul>
-                                <div class="tab-image">
-                                    <img src="/api/placeholder/400/250" alt="Three Quarter Floating Axle Diagram">
-                                </div>
                             </div>
                             <div class="tab-pane" id="semi-floating">
                                 <h4>Semi Floating Axle</h4>
@@ -2498,9 +2418,6 @@
                                     <li>Axle handles all lateral cornering forces</li>
                                     <li>Simplest and lightest design but less robust</li>
                                 </ul>
-                                <div class="tab-image">
-                                    <img src="/api/placeholder/400/250" alt="Semi Floating Axle Diagram">
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -2508,6 +2425,89 @@
                 
                 <div class="knowledge-check" data-id="bearing-types" data-correct="a">
                     <div class="knowledge-question">Which axle type is most suitable for high-performance motorsport where reliability is critical?</div>
+                    <div class="knowledge-options">
+                        <div class="knowledge-option" data-option="a">Fully floating axle</div>
+                        <div class="knowledge-option" data-option="b">Three quarter floating axle</div>
+                        <div class="knowledge-option" data-option="c">Semi floating axle</div>
+                        <div class="knowledge-option" data-option="d">Non-floating axle</div>
+                    </div>
+                    <div class="knowledge-feedback"></div>
+                </div>
+                
+                <div class="section-summary">
+                    <h3>Section Summary</h3>
+                    <p>In this section, you've learned about:</p>
+                    <ul>
+                        <li>The purpose and layout of propshafts and drive shafts</li>
+                        <li>The different types of stresses experienced by driveline components</li>
+                        <li>Material selection based on application requirements</li>
+                        <li>Different wheel bearing arrangements and their applications</li>
+                    </ul>
+                    <p>Continue to the next section to learn about universal and CV joints in driveline systems.</p>
+                </div>
+            `,
+            
+            "driveline-joints": `
+                <h1>Universal & CV Joints</h1>
+                
+                <h2>Universal Joints</h2>
+                <p>Also known as Cardan or Hooke's joints:</p>
+                <ul>
+                    <li>Allow transmission of power between non-aligned shafts</li>
+                    <li>Speed fluctuates during rotation when operating at an angle</li>
+                    <li>Typically used in pairs to cancel out speed variations</li>
+                </ul>
+                
+                <h2>Constant Velocity Joints</h2>
+                <p>Superior to universal joints for front-wheel drive applications:</p>
+                <ul>
+                    <li>Maintain constant velocity throughout rotation</li>
+                    <li>Essential for drive shafts that incorporate steering</li>
+                    <li>Reduce vibration and improve power delivery</li>
+                </ul>
+                
+                <h2>Types of CV Joints</h2>
+                <ul>
+                    <li>Rzeppa - Ball-type CV joint common in front axles</li>
+                    <li>Tripod - More compact design with three rollers</li>
+                    <li>Double-Cardan - Two universal joints with center yoke</li>
+                </ul>
+                
+                <h2>Protective Boots</h2>
+                <p>Rubber or synthetic boots are critical:</p>
+                <ul>
+                    <li>Retain grease within the joint</li>
+                    <li>Prevent contamination from water and debris</li>
+                    <li>Boot failure is the most common cause of joint damage</li>
+                </ul>
+            `,
+            
+            "driveline-differential": `
+                <h1>Differential & Final Drive</h1>
+                
+                <div class="section-objective">
+                    <h3>📋 Your Tasks:</h3>
+                    <ol>
+                        <li>Learn about the purpose and types of differentials in motorsport</li>
+                        <li>Understand the construction of final drive components</li>
+                        <li>Calculate gear ratios using the interactive tool</li>
+                        <li>Complete the differential operation simulation activity</li>
+                    </ol>
+                </div>
+                
+                <h2>Purpose of Differentials</h2>
+                <p>Differentials serve multiple functions:</p>
+                <ul>
+                    <li>Allow wheels to rotate at different speeds during cornering</li>
+                    <li>Transmit power to both wheels</li>
+                    <li>Provide final drive reduction</li>
+                </ul>
+                
+                <div class="interactive-diagram" data-id="differential-operation">
+                    <div class="diagram-container">
+                        <div class="hotspot" style="top: 35%; left: 35%" data-id="1">1</div>
+                        <div class="tooltip" style="top: 35%; left: 35%">Crown Wheel: Large gear driven by pinion, provides speed reduction</div>
+                        
                     <div class="knowledge-options">
                         <div class="knowledge-option" data-option="a">Fully floating axle</div>
                         <div class="knowledge-option" data-option="b">Three quarter floating axle</div>
